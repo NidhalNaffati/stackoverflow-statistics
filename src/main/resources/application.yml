@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/stackexchangedb
+    # this command allows you to see the size of the database
+    # SELECT pg_size_pretty(pg_database_size('stackexchangedb')) AS size;
+    username: postgres
+    password: mysecretpassword
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+    database: postgresql
+    database-platform: PostgreSQLDialect
+
+
+stack-exchange:
+  api-key: Ve4rjNkrFc*ZJqf25pA2ZA((
+  base-url: https://api.stackexchange.com/2.2
