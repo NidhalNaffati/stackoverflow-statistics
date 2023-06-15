@@ -21,10 +21,9 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    public Map<String, Integer> getQuestionCountByDayOfWeek(String tag) {
-        log.error("getQuestionCountByDayOfWeek for tag: {}", tag);
+    public Map<String, Integer> getNumberOfQuestionPerDay(String programmingLanguage) {
 
-        List<Long> creationDates = questionRepository.findCreationDatesByTagsContaining(tag);
+        List<Long> creationDates = questionRepository.findCreationDatesByTagsContaining(programmingLanguage);
         Map<String, Integer> questionsCountByDayOfWeek = new HashMap<>();
 
         for (Long creationDate : creationDates) {
@@ -44,4 +43,31 @@ public class QuestionService {
         return questionsCountByDayOfWeek;
     }
 
+    public int getNumberOfQuestionsAnsweredForTheProgrammingLanguage(String programmingLanguage) {
+        return questionRepository.countByIs_answeredAndTagsContains(true, programmingLanguage);
+    }
+
+    public int getNumberOfQuestionsUnAnsweredForTheProgrammingLanguage(String programmingLanguage) {
+        return questionRepository.countByIs_answeredAndTagsContains(false, programmingLanguage);
+    }
+
+    public Map<String, Integer> getNumberOfQuestionsAnsweredAndUnAnsweredForTheProgrammingLanguage(String programmingLanguage) {
+        Map<String, Integer> answeredUnansweredQuestions = new HashMap<>();
+        answeredUnansweredQuestions.put("answered", getNumberOfQuestionsAnsweredForTheProgrammingLanguage(programmingLanguage));
+        answeredUnansweredQuestions.put("unanswered", getNumberOfQuestionsUnAnsweredForTheProgrammingLanguage(programmingLanguage));
+
+        return answeredUnansweredQuestions;
+    }
+
+    public Map<String, Integer> getNumberOfQuestionsAnsweredAndUnAnsweredForAllQuestions() {
+        Map<String, Integer> answeredUnanswered = new HashMap<>();
+        answeredUnanswered.put("answered", questionRepository.countByIs_answered(true));
+        answeredUnanswered.put("unanswered", questionRepository.countByIs_answered(false));
+        return answeredUnanswered;
+
+    }
+
+    public int getNumberOfQuestions() {
+        return questionRepository.countAll();
+    }
 }
