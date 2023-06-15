@@ -15,7 +15,7 @@ import java.util.List;
 public class Question {
     @Id
     private long question_id;
-    public boolean is_answered;
+    public Boolean is_answered;
     // Adjust the length of the column to avoid the following error:
     // Data truncation: Data too long for column 'title' at row 1
     @Column(length = 510)
@@ -32,8 +32,4 @@ public class Question {
     public long closed_date;
     public long last_activity_date;
     public long last_edit_date;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "owner_id")
-    private Owner owner;
 }
