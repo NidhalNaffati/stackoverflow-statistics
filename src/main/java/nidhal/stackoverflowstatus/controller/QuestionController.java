@@ -20,23 +20,23 @@ public class QuestionController {
 
     @GetMapping("number-of-questions-per-day/{programmingLanguage}")
     public Map<String, Integer> retrieveNumberOfQuestionsPerDay(@PathVariable String programmingLanguage) {
-        return questionService.getNumberOfQuestionPerDay(programmingLanguage);
+        return questionService.getNumberOfQuestionsPerDay(programmingLanguage);
     }
 
 
     @GetMapping("answered-unanswered/{programmingLanguage}")
     public Map<String, Integer> retrieveTheNumberOfAnsweredAndUnansweredQuestions(@PathVariable String programmingLanguage) {
-        return questionService.getNumberOfQuestionsAnsweredAndUnAnsweredForTheProgrammingLanguage(programmingLanguage);
+        return questionService.getNumberOfAnsweredAndUnansweredQuestionsForProgrammingLanguage(programmingLanguage);
     }
 
     @GetMapping("answered-unanswered-for-all-languages")
     public Map<String, Integer> getAnsweredUnansweredForAllQuestions() {
-        return questionService.getNumberOfQuestionsAnsweredAndUnAnsweredForAllQuestions();
+        return questionService.getNumberOfAnsweredAndUnansweredQuestionsForAllQuestions();
     }
 
     @GetMapping("count-all")
     public int getNumberOfQuestions() {
-        return questionService.getNumberOfQuestions();
+        return questionService.getTotalNumberOfQuestions();
     }
 
 }

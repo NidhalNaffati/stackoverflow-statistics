@@ -21,7 +21,7 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    public Map<String, Integer> getNumberOfQuestionPerDay(String programmingLanguage) {
+    public Map<String, Integer> getNumberOfQuestionsPerDay(String programmingLanguage) {
 
         List<Long> creationDates = questionRepository.findCreationDatesByTagsContaining(programmingLanguage);
         Map<String, Integer> questionsCountByDayOfWeek = new HashMap<>();
@@ -43,23 +43,23 @@ public class QuestionService {
         return questionsCountByDayOfWeek;
     }
 
-    public int getNumberOfQuestionsAnsweredForTheProgrammingLanguage(String programmingLanguage) {
+    public int getNumberOfAnsweredQuestionsForProgrammingLanguage(String programmingLanguage) {
         return questionRepository.countByIs_answeredAndTagsContains(true, programmingLanguage);
     }
 
-    public int getNumberOfQuestionsUnAnsweredForTheProgrammingLanguage(String programmingLanguage) {
+    public int getNumberOfUnansweredQuestionsForProgrammingLanguage(String programmingLanguage) {
         return questionRepository.countByIs_answeredAndTagsContains(false, programmingLanguage);
     }
 
-    public Map<String, Integer> getNumberOfQuestionsAnsweredAndUnAnsweredForTheProgrammingLanguage(String programmingLanguage) {
+    public Map<String, Integer> getNumberOfAnsweredAndUnansweredQuestionsForProgrammingLanguage(String programmingLanguage) {
         Map<String, Integer> answeredUnansweredQuestions = new HashMap<>();
-        answeredUnansweredQuestions.put("answered", getNumberOfQuestionsAnsweredForTheProgrammingLanguage(programmingLanguage));
-        answeredUnansweredQuestions.put("unanswered", getNumberOfQuestionsUnAnsweredForTheProgrammingLanguage(programmingLanguage));
+        answeredUnansweredQuestions.put("answered", getNumberOfAnsweredQuestionsForProgrammingLanguage(programmingLanguage));
+        answeredUnansweredQuestions.put("unanswered", getNumberOfUnansweredQuestionsForProgrammingLanguage(programmingLanguage));
 
         return answeredUnansweredQuestions;
     }
 
-    public Map<String, Integer> getNumberOfQuestionsAnsweredAndUnAnsweredForAllQuestions() {
+    public Map<String, Integer> getNumberOfAnsweredAndUnansweredQuestionsForAllQuestions() {
         Map<String, Integer> answeredUnanswered = new HashMap<>();
         answeredUnanswered.put("answered", questionRepository.countByIs_answered(true));
         answeredUnanswered.put("unanswered", questionRepository.countByIs_answered(false));
@@ -67,7 +67,8 @@ public class QuestionService {
 
     }
 
-    public int getNumberOfQuestions() {
+    public int getTotalNumberOfQuestions() {
         return questionRepository.countAll();
     }
+
 }
