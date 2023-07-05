@@ -25,7 +25,7 @@ public class StackExchangeApiService {
     private final RestTemplate restTemplate;
     private final QuestionRepository questionRepository;
     private final StackExchangeApiConfig stackExchangeApiConfig;
-
+    private int numberOfRequestsMade = 0;
 
     public StackExchangeApiService(
             QuestionRepository questionRepository,
@@ -51,7 +51,7 @@ public class StackExchangeApiService {
         int updatedQuestions = 0;
         int newQuestions = 0;
 
-        // Calculate the timestamp for one year ago
+        // Calculate the timestamp for one week ago
         long oneWeekAgoInSeconds = Instant.now().minus(Duration.ofDays(7)).getEpochSecond();
 
         // Build the API URL
@@ -79,6 +79,11 @@ public class StackExchangeApiService {
                         null,
                         StackExchangeResponse.class
                 );
+
+                // Increment the number of requests
+                numberOfRequestsMade++;
+                log.info("number of requests: {}", numberOfRequestsMade);
+
                 // Check the status code of the response
                 if (response.getStatusCode() == HttpStatus.OK) {
                     // Get the response body
@@ -111,11 +116,20 @@ public class StackExchangeApiService {
                     log.error("There is a problem with the Stack Exchange server: {}", response.getStatusCode());
                     log.error("response body: {}", response.getBody());
                 }
+
+                // sleep for 1 second each 30 requests to avoid hitting the API rate limit
+                if (numberOfRequestsMade % 30 == 0) {
+                    log.info("sleeping for 1 second");
+                    Thread.sleep(1000);
+                }
+
             } catch (RestClientException e) {
-                e.printStackTrace();
-                // Print an error message if there is an exception thrown by the restTemplate object
-                log.error("There was an error communicating with the Stack Exchange API: {} ", e.getLocalizedMessage());
+                log.error("There was an error executing the request number: {}", numberOfRequestsMade);
+                log.error("exception: {}", e.getLocalizedMessage());
                 hasMore = false;
+            } catch (InterruptedException exception) {
+                log.error("There was an error while sleeping the thread");
+                log.error("exception: {}", exception.getLocalizedMessage());
             }
         }
         log.info("Stored all questions related to {} there is {} new question & {} updated questions", programingLanguage, newQuestions, updatedQuestions);
