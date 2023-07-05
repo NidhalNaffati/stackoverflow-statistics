@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @RestController
 @AllArgsConstructor
@@ -17,8 +20,17 @@ public class StackExchangeApiController {
 
     @GetMapping
     public String storeJavaQuestions() {
-        List<String> programingLanguages = List.of("java", "python", "go", "javascript");
-        programingLanguages.forEach(stackExchangeApiService::storeAllQuestionRelatedTo);
+        List<String> programmingLanguages = List.of("java", "python", "javascript", "go", "kotlin", "c++", "c#", "ruby", "php", "swift");
+
+        int maxThreads = 3;
+        ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
+
+        for (String language : programmingLanguages) {
+            CompletableFuture.runAsync(() -> stackExchangeApiService.storeAllQuestionRelatedTo(language), executorService);
+        }
+
+        executorService.shutdown();
+
         return "Questions stored successfully";
     }
 }
