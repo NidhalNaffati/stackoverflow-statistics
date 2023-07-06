@@ -18,6 +18,9 @@ spring:
     database: postgresql
     database-platform: PostgreSQLDialect
 
+  cache:
+    redis:
+      time-to-live: 300000
 
 stack-exchange:
   api-key: Ve4rjNkrFc*ZJqf25pA2ZA((
