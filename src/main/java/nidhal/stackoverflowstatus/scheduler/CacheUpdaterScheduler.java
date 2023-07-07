@@ -23,11 +23,11 @@ public class CacheUpdaterScheduler {
 
     private final List<String> programmingLanguages = List.of("java", "python", "javascript", "go", "kotlin", "c++", "c#", "ruby", "php", "swift");
 
-    private final int fixedDelay = 2 * 60 * 1000; // 2 minutes
+    private final int fixedDelay = 5 * 60 * 1000; // 10 minutes
 
 
     @Scheduled(fixedDelay = fixedDelay)
-    public void updateCachedQuestionsPerDay() {
+    public void updateCachedNumberOfQuestionsPerDay() {
         log.info("Updating cached questions per day...");
 
         // initialize a thread pool with a maximum number of threads equal to the number of programming languages
@@ -46,6 +46,10 @@ public class CacheUpdaterScheduler {
         updateCachedTotalNumberOfQuestions();
         // update the answered unanswered questions for all languages cache
         updateCachedAnsweredUnansweredQuestionsForAllLanguages();
+        // update the number of questions asked today cache
+        updateCachedTotalNumberOfQuestionsAskedToday();
+        // update the total number of questions per day cache
+        updateCachedTotalNumberOfQuestionsPerDay();
 
         // shutdown the thread pool
         executorService.shutdown();
@@ -53,13 +57,14 @@ public class CacheUpdaterScheduler {
         log.info("All cached data updated");
     }
 
-
     public void updateCachesRelatedToProgrammingLanguage(String programmingLanguage) {
         // call all the methods that update the caches related to the given programming language
-        updateCachedQuestionsPerDay(programmingLanguage);
-        updateCachedAnsweredUnansweredQuestions(programmingLanguage);
+        updateCachedNumberOfQuestionsPerDay(programmingLanguage);
         updateCachedAnsweredQuestions(programmingLanguage);
         updateCachedUnansweredQuestions(programmingLanguage);
+        updateCachedAnsweredAndUnansweredQuestions(programmingLanguage);
+        updateCachedQuestionsAskedToday(programmingLanguage);
+        updateCachedNumberOfQuestions(programmingLanguage);
     }
 
     @CachePut(value = "totalNumberOfQuestionsCache")
@@ -68,31 +73,56 @@ public class CacheUpdaterScheduler {
         questionService.getTotalNumberOfQuestions();
     }
 
-    @CachePut(value = "answeredUnansweredQuestionsForAllLanguagesCache")
+    @CachePut(value = "numberOfQuestionsCache", key = "#programmingLanguage")
+    public void updateCachedNumberOfQuestions(String programmingLanguage) {
+        log.info("Updating cached number of questions for {}...", programmingLanguage);
+        questionService.getNumberOfQuestionsForProgrammingLanguage(programmingLanguage);
+    }
+
+    @CachePut(value = "totalNumberOfQuestionsAskedTodayCache")
+    public void updateCachedTotalNumberOfQuestionsAskedToday() {
+        log.info("Updating cached total number of questions asked today...");
+        questionService.getTotalNumberOfQuestionsAskedToday();
+    }
+
+    @CachePut(value = "numberOfQuestionsAskedTodayCache", key = "#programmingLanguage")
+    public void updateCachedQuestionsAskedToday(String programmingLanguage) {
+        log.info("Updating cached questions asked today for {}...", programmingLanguage);
+        questionService.getNumberOfQuestionsAskedTodayPerProgrammingLanguage(programmingLanguage);
+    }
+
+    @CachePut(value = "totalNumberOfQuestionsPerDayCache")
+    public void updateCachedTotalNumberOfQuestionsPerDay() {
+        log.info("Updating cached total number of questions per day...");
+        questionService.getTotalNumberOfQuestionsPerDay();
+    }
+
+
+    @CachePut(value = "numberOfQuestionsPerDayCache", key = "#programmingLanguage")
+    public void updateCachedNumberOfQuestionsPerDay(String programmingLanguage) {
+        log.info("Updating cached questions per day for {}...", programmingLanguage);
+        questionService.getNumberOfQuestionsPerDay(programmingLanguage);
+    }
+
+    @CachePut(value = "totalNumberOfAnsweredAndUnansweredQuestionsForAllLanguagesCache")
     public void updateCachedAnsweredUnansweredQuestionsForAllLanguages() {
         log.info("Updating cached answered unanswered questions for all languages...");
         questionService.getNumberOfAnsweredAndUnansweredQuestionsForAllQuestions();
     }
 
-    @CachePut(value = "questionsPerDayCache", key = "#programmingLanguage")
-    public void updateCachedQuestionsPerDay(String programmingLanguage) {
-        log.info("Updating cached questions per day for {}...", programmingLanguage);
-        questionService.getNumberOfQuestionsPerDay(programmingLanguage);
-    }
-
-    @CachePut(value = "answeredUnansweredQuestionsCache", key = "#programmingLanguage")
-    public void updateCachedAnsweredUnansweredQuestions(String programmingLanguage) {
+    @CachePut(value = "numberOfAnsweredAndUnansweredQuestionsCache", key = "#programmingLanguage")
+    public void updateCachedAnsweredAndUnansweredQuestions(String programmingLanguage) {
         log.info("Updating cached answered unanswered questions for {}...", programmingLanguage);
         questionService.getNumberOfAnsweredAndUnansweredQuestionsForProgrammingLanguage(programmingLanguage);
     }
 
-    @CachePut(value = "answeredQuestionsCache", key = "#programmingLanguage")
+    @CachePut(value = "numberOfAnsweredQuestionsCache", key = "#programmingLanguage")
     public void updateCachedAnsweredQuestions(String programmingLanguage) {
         log.info("Updating cached answered questions for {}...", programmingLanguage);
         questionService.getNumberOfAnsweredQuestionsForProgrammingLanguage(programmingLanguage);
     }
 
-    @CachePut(value = "unansweredQuestionsCache", key = "#programmingLanguage")
+    @CachePut(value = "numberOfUnansweredQuestionsCache", key = "#programmingLanguage")
     public void updateCachedUnansweredQuestions(String programmingLanguage) {
         log.info("Updating cached unanswered questions for {}...", programmingLanguage);
         questionService.getNumberOfUnansweredQuestionsForProgrammingLanguage(programmingLanguage);
