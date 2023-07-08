@@ -20,7 +20,7 @@ spring:
 
   cache:
     redis:
-      time-to-live: 3600000 # 1 hour
+      time-to-live: 10000 # 10 seconds
 
 stack-exchange:
   api-key: Ve4rjNkrFc*ZJqf25pA2ZA((

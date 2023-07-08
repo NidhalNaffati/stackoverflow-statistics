@@ -3,7 +3,7 @@ package nidhal.stackoverflowstatus.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nidhal.stackoverflowstatus.repository.QuestionRepository;
+import nidhal.stackoverflowstatus.dao.QuestionDao;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -18,18 +18,18 @@ import java.util.Map;
 @AllArgsConstructor
 public class QuestionService {
 
-    private final QuestionRepository questionRepository;
+    private final QuestionDao questionDao;
 
     private final List<String> programmingLanguages = List.of("java", "python", "javascript", "go", "kotlin", "c++", "c#", "ruby", "php", "swift");
 
     @Cacheable(value = "totalNumberOfQuestionsCache")
     public int getTotalNumberOfQuestions() {
-        return questionRepository.countAll();
+        return questionDao.countAll();
     }
 
     @Cacheable(value = "numberOfQuestionsCache", key = "#programmingLanguage")
     public int getNumberOfQuestionsForProgrammingLanguage(String programmingLanguage) {
-        return questionRepository.countByTagsContains(programmingLanguage);
+        return questionDao.countByTagsContains(programmingLanguage);
     }
 
     @Cacheable(value = "totalNumberOfQuestionsAskedTodayCache")
@@ -49,12 +49,12 @@ public class QuestionService {
         long startEpoch = startOfDay.atZone(ZoneId.systemDefault()).toEpochSecond();
         long endEpoch = endOfDay.atZone(ZoneId.systemDefault()).toEpochSecond();
 
-        return questionRepository.countByCreation_dateBetweenAndTagsContains(startEpoch, endEpoch, programmingLanguage);
+        return questionDao.countByCreationDateBetweenAndTagsContains(startEpoch, endEpoch, programmingLanguage);
     }
 
     @Cacheable(value = "totalNumberOfQuestionsPerDayCache")
-    public Map<String, Integer> getTotalNumberOfQuestionsPerDay() {
-        Map<String, Integer> totalNumberOfQuestionsPerDay = new HashMap<>();
+    public LinkedHashMap<String, Integer> getTotalNumberOfQuestionsPerDay() {
+        LinkedHashMap<String, Integer> totalNumberOfQuestionsPerDay = new LinkedHashMap<>();
         for (String programmingLanguage : programmingLanguages) {
             Map<String, Integer> numberOfQuestionsPerDay = getNumberOfQuestionsPerDay(programmingLanguage);
             for (Map.Entry<String, Integer> entry : numberOfQuestionsPerDay.entrySet()) {
@@ -69,7 +69,7 @@ public class QuestionService {
     @Cacheable(value = "numberOfQuestionsPerDayCache", key = "#programmingLanguage")
     public LinkedHashMap<String, Integer> getNumberOfQuestionsPerDay(String programmingLanguage) {
         // Get the creation dates of all questions that contain the programming language
-        List<Long> creationDates = questionRepository.findCreationDatesByTagsContaining(programmingLanguage);
+        List<Long> creationDates = questionDao.findCreationDatesByTagsContaining(programmingLanguage);
 
         // Map to store the number of questions per day of the week while preserving insertion order
         LinkedHashMap<String, Integer> questionsCountByDayOfWeek = new LinkedHashMap<>();
@@ -106,8 +106,8 @@ public class QuestionService {
     @Cacheable(value = "totalNumberOfAnsweredAndUnansweredQuestionsForAllLanguagesCache")
     public Map<String, Integer> getNumberOfAnsweredAndUnansweredQuestionsForAllQuestions() {
         Map<String, Integer> answeredUnanswered = new HashMap<>();
-        answeredUnanswered.put("answered", questionRepository.countByIs_answered(true));
-        answeredUnanswered.put("unanswered", questionRepository.countByIs_answered(false));
+        answeredUnanswered.put("answered", questionDao.countByIsAnswered(true));
+        answeredUnanswered.put("unanswered", questionDao.countByIsAnswered(false));
         return answeredUnanswered;
     }
 
@@ -122,12 +122,12 @@ public class QuestionService {
 
     @Cacheable(value = "numberOfAnsweredQuestionsCache", key = "#programmingLanguage")
     public int getNumberOfAnsweredQuestionsForProgrammingLanguage(String programmingLanguage) {
-        return questionRepository.countByIs_answeredAndTagsContains(true, programmingLanguage);
+        return questionDao.countByIsAnsweredAndTagsContains(true, programmingLanguage);
     }
 
     @Cacheable(value = "numberOfUnansweredQuestionsCache", key = "#programmingLanguage")
     public int getNumberOfUnansweredQuestionsForProgrammingLanguage(String programmingLanguage) {
-        return questionRepository.countByIs_answeredAndTagsContains(false, programmingLanguage);
+        return questionDao.countByIsAnsweredAndTagsContains(false, programmingLanguage);
     }
 
 }
