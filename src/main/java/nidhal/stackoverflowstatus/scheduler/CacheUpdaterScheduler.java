@@ -9,9 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Slf4j
 @Configuration
@@ -30,16 +27,9 @@ public class CacheUpdaterScheduler {
     public void updateCachedNumberOfQuestionsPerDay() {
         log.info("Updating cached questions per day...");
 
-        // initialize a thread pool with a maximum number of threads equal to the number of programming languages
-        int maxThreads = programmingLanguages.size();
-        ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
-
-        // for each programming language, update the cache in a separate thread
         for (String language : programmingLanguages) {
-            CompletableFuture.runAsync(
-                    () -> updateCachesRelatedToProgrammingLanguage(language),
-                    executorService
-            );
+            log.info("UPDATING DATA FOR : {} ", language);
+            updateCachesRelatedToProgrammingLanguage(language);
         }
 
         // update the total number of questions cache
@@ -51,10 +41,7 @@ public class CacheUpdaterScheduler {
         // update the total number of questions per day cache
         updateCachedTotalNumberOfQuestionsPerDay();
 
-        // shutdown the thread pool
-        executorService.shutdown();
-
-        log.info("All cached data updated");
+        log.info("ALL CACHED DATA UPDATED.");
     }
 
     public void updateCachesRelatedToProgrammingLanguage(String programmingLanguage) {
@@ -96,7 +83,6 @@ public class CacheUpdaterScheduler {
         log.info("Updating cached total number of questions per day...");
         questionService.getTotalNumberOfQuestionsPerDay();
     }
-
 
     @CachePut(value = "numberOfQuestionsPerDayCache", key = "#programmingLanguage")
     public void updateCachedNumberOfQuestionsPerDay(String programmingLanguage) {
