@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>nidhal</groupId>
-    <artifactId>stackoverflow-status</artifactId>
+    <artifactId>stackoverflow-statistics</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>stackoverflow-status</name>
-    <description>stackoverflow-status</description>
+    <description>stackoverflow-statistics</description>
     <properties>
         <java.version>17</java.version>
     </properties>
