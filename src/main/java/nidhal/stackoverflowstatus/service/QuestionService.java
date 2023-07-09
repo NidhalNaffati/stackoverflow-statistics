@@ -22,6 +22,7 @@ public class QuestionService {
 
     private final List<String> programmingLanguages = List.of("java", "python", "javascript", "go", "kotlin", "c++", "c#", "ruby", "php", "swift");
 
+    // ------------------------ TOTAL NUMBER OF QUESTIONS ------------------------ //
     @Cacheable(value = "totalNumberOfQuestionsCache")
     public int getTotalNumberOfQuestions() {
         return questionDao.countAll();
@@ -29,16 +30,18 @@ public class QuestionService {
 
     @Cacheable(value = "numberOfQuestionsCache", key = "#programmingLanguage")
     public int getNumberOfQuestionsForProgrammingLanguage(String programmingLanguage) {
-        return questionDao.countByTagsContains(programmingLanguage);
+        return questionDao.countAllByTagsContains(programmingLanguage);
     }
 
     @Cacheable(value = "totalNumberOfQuestionsAskedTodayCache")
     public int getTotalNumberOfQuestionsAskedToday() {
-        int totalNumberOfQuestionsAskedToday = 0;
-        for (String programmingLanguage : programmingLanguages) {
-            totalNumberOfQuestionsAskedToday += getNumberOfQuestionsAskedTodayPerProgrammingLanguage(programmingLanguage);
-        }
-        return totalNumberOfQuestionsAskedToday;
+        LocalDate today = LocalDate.now(ZoneId.systemDefault());
+        LocalDateTime startOfDay = LocalDateTime.of(today, LocalTime.MIDNIGHT);
+        LocalDateTime endOfDay = LocalDateTime.of(today.plusDays(1), LocalTime.MIDNIGHT);
+        long startEpoch = startOfDay.atZone(ZoneId.systemDefault()).toEpochSecond();
+        long endEpoch = endOfDay.atZone(ZoneId.systemDefault()).toEpochSecond();
+
+        return questionDao.countByCreationDateBetween(startEpoch,endEpoch);
     }
 
     @Cacheable(value = "numberOfQuestionsAskedTodayCache", key = "#programmingLanguage")
@@ -56,7 +59,7 @@ public class QuestionService {
     public LinkedHashMap<String, Integer> getTotalNumberOfQuestionsPerDay() {
         LinkedHashMap<String, Integer> totalNumberOfQuestionsPerDay = new LinkedHashMap<>();
         for (String programmingLanguage : programmingLanguages) {
-            Map<String, Integer> numberOfQuestionsPerDay = getNumberOfQuestionsPerDay(programmingLanguage);
+            Map<String, Integer> numberOfQuestionsPerDay = getNumberOfQuestionsPerDayForProgrammingLanguage(programmingLanguage);
             for (Map.Entry<String, Integer> entry : numberOfQuestionsPerDay.entrySet()) {
                 String dayOfWeek = entry.getKey();
                 Integer numberOfQuestions = entry.getValue();
@@ -67,7 +70,7 @@ public class QuestionService {
     }
 
     @Cacheable(value = "numberOfQuestionsPerDayCache", key = "#programmingLanguage")
-    public LinkedHashMap<String, Integer> getNumberOfQuestionsPerDay(String programmingLanguage) {
+    public LinkedHashMap<String, Integer> getNumberOfQuestionsPerDayForProgrammingLanguage(String programmingLanguage) {
         // Get the creation dates of all questions that contain the programming language
         List<Long> creationDates = questionDao.findCreationDatesByTagsContaining(programmingLanguage);
 
@@ -103,13 +106,38 @@ public class QuestionService {
         return questionsCountByDayOfWeek;
     }
 
-    @Cacheable(value = "totalNumberOfAnsweredAndUnansweredQuestionsForAllLanguagesCache")
-    public Map<String, Integer> getNumberOfAnsweredAndUnansweredQuestionsForAllQuestions() {
+    // ------------------------ ANSWERED & UNANSWERED QUESTIONS ------------------------ //
+    @Cacheable(value = "totalNumberOfAnsweredQuestionsCache")
+    public int getTotalNumberOfAnsweredQuestions() {
+        return questionDao.countByIsAnswered(true);
+    }
+
+    @Cacheable(value = "numberOfAnsweredQuestionsCache", key = "#programmingLanguage")
+    public int getNumberOfAnsweredQuestionsForProgrammingLanguage(String programmingLanguage) {
+        return questionDao.countByIsAnsweredAndTagsContains(true, programmingLanguage);
+    }
+
+    @Cacheable(value = "totalNumberOfUnansweredQuestionsCache")
+    public int getTotalNumberOfUnansweredQuestions() {
+        return questionDao.countByIsAnswered(false);
+    }
+
+    @Cacheable(value = "numberOfUnansweredQuestionsCache", key = "#programmingLanguage")
+    public int getNumberOfUnansweredQuestionsForProgrammingLanguage(String programmingLanguage) {
+        return questionDao.countByIsAnsweredAndTagsContains(false, programmingLanguage);
+    }
+
+    @Cacheable(value = "totalNumberOfAnsweredAndUnansweredQuestionsCache")
+    public Map<String, Integer> getTotalNumberOfQuestionsAnsweredAndUnanswered() {
         Map<String, Integer> answeredUnanswered = new HashMap<>();
-        answeredUnanswered.put("answered", questionDao.countByIsAnswered(true));
-        answeredUnanswered.put("unanswered", questionDao.countByIsAnswered(false));
+        int totalNumberOfAnsweredQuestions = getTotalNumberOfAnsweredQuestions();
+        int totalNumberOfUnansweredQuestions = getTotalNumberOfUnansweredQuestions();
+
+        answeredUnanswered.put("answered", totalNumberOfAnsweredQuestions);
+        answeredUnanswered.put("unanswered", totalNumberOfUnansweredQuestions);
         return answeredUnanswered;
     }
+
 
     @Cacheable(value = "numberOfAnsweredAndUnansweredQuestionsCache", key = "#programmingLanguage")
     public Map<String, Integer> getNumberOfAnsweredAndUnansweredQuestionsForProgrammingLanguage(String programmingLanguage) {
@@ -120,14 +148,49 @@ public class QuestionService {
         return answeredUnansweredQuestions;
     }
 
-    @Cacheable(value = "numberOfAnsweredQuestionsCache", key = "#programmingLanguage")
-    public int getNumberOfAnsweredQuestionsForProgrammingLanguage(String programmingLanguage) {
-        return questionDao.countByIsAnsweredAndTagsContains(true, programmingLanguage);
+
+    // ------------------------ OPEN & CLOSED QUESTIONS ------------------------ //
+    @Cacheable(value = "totalNumberOfClosedQuestionsCache")
+    public int getTotalNumberOfClosedQuestions() {
+        return questionDao.countByIsClosed(true);
     }
 
-    @Cacheable(value = "numberOfUnansweredQuestionsCache", key = "#programmingLanguage")
-    public int getNumberOfUnansweredQuestionsForProgrammingLanguage(String programmingLanguage) {
-        return questionDao.countByIsAnsweredAndTagsContains(false, programmingLanguage);
+    @Cacheable(value = "numberOfClosedQuestionsCache", key = "#programmingLanguage")
+    public int getNumberOfClosedQuestionsForProgrammingLanguage(String programmingLanguage) {
+        return questionDao.countByIsClosedAndTagsContains(true, programmingLanguage);
     }
 
+    @Cacheable(value = "totalNumberOfOpenQuestionsCache")
+    public int getTotalNumberOfOpenQuestions() {
+        return questionDao.countByIsClosed(false);
+    }
+
+    @Cacheable(value = "numberOfOpenQuestionsCache", key = "#programmingLanguage")
+    public int getNumberOfOpenQuestionsForProgrammingLanguage(String programmingLanguage) {
+        return questionDao.countByIsClosedAndTagsContains(false, programmingLanguage);
+    }
+
+    @Cacheable(value = "totalNumberOfOpenAndClosedQuestionsCache")
+    public Map<String, Integer> getNumberOfOpenAndClosedQuestions() {
+        int totalNumberOfQuestionsOpen = getTotalNumberOfOpenQuestions();
+        int totalNumberOfQuestionsClosed = getTotalNumberOfClosedQuestions();
+
+        Map<String, Integer> openClosed = new HashMap<>();
+        openClosed.put("open", totalNumberOfQuestionsOpen);
+        openClosed.put("closed", totalNumberOfQuestionsClosed);
+
+        return openClosed;
+    }
+
+    @Cacheable(value = "numberOfOpenAndClosedQuestionsCache", key = "#programmingLanguage")
+    public Map<String, Integer> getNumberOfOpenAndClosedQuestionsForProgrammingLanguage(String programmingLanguage) {
+        int numberOfQuestionsOpen = getNumberOfOpenQuestionsForProgrammingLanguage(programmingLanguage);
+        int numberOfQuestionsClosed = getNumberOfClosedQuestionsForProgrammingLanguage(programmingLanguage);
+
+        Map<String, Integer> openClosed = new HashMap<>();
+        openClosed.put("open", numberOfQuestionsOpen);
+        openClosed.put("closed", numberOfQuestionsClosed);
+
+        return openClosed;
+    }
 }
