@@ -25,3 +25,14 @@ spring:
 stack-exchange:
   api-key: Ve4rjNkrFc*ZJqf25pA2ZA((
   base-url: https://api.stackexchange.com/2.2
+  programming-languages:
+    - java
+    - python
+    - javascript
+    - go
+    - kotlin
+    - swift
+    - php
+    - ruby
+    - c++
+    - c#

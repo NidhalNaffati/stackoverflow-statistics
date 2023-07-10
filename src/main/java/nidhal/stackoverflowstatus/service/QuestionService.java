@@ -1,8 +1,10 @@
 package nidhal.stackoverflowstatus.service;
 
 
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nidhal.stackoverflowstatus.configuration.StackExchangeApiConfig;
 import nidhal.stackoverflowstatus.dao.QuestionDao;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -19,8 +21,13 @@ import java.util.Map;
 public class QuestionService {
 
     private final QuestionDao questionDao;
+    private final StackExchangeApiConfig stackExchangeApiConfig;
+    private List<String> programmingLanguages;
 
-    private final List<String> programmingLanguages = List.of("java", "python", "javascript", "go", "kotlin", "c++", "c#", "ruby", "php", "swift");
+    @PostConstruct
+    private void init() {
+        programmingLanguages = stackExchangeApiConfig.getProgrammingLanguages();
+    }
 
     // ------------------------ TOTAL NUMBER OF QUESTIONS ------------------------ //
     @Cacheable(value = "totalNumberOfQuestionsCache")
@@ -41,7 +48,7 @@ public class QuestionService {
         long startEpoch = startOfDay.atZone(ZoneId.systemDefault()).toEpochSecond();
         long endEpoch = endOfDay.atZone(ZoneId.systemDefault()).toEpochSecond();
 
-        return questionDao.countByCreationDateBetween(startEpoch,endEpoch);
+        return questionDao.countByCreationDateBetween(startEpoch, endEpoch);
     }
 
     @Cacheable(value = "numberOfQuestionsAskedTodayCache", key = "#programmingLanguage")

@@ -1,7 +1,9 @@
 package nidhal.stackoverflowstatus.scheduler;
 
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nidhal.stackoverflowstatus.configuration.StackExchangeApiConfig;
 import nidhal.stackoverflowstatus.service.QuestionService;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +19,13 @@ import java.util.List;
 public class CacheUpdaterScheduler {
 
     private final QuestionService questionService;
+    private final StackExchangeApiConfig stackExchangeApiConfig;
+    private List<String> programmingLanguages;
 
-    private final List<String> programmingLanguages = List.of("java", "python", "javascript", "go", "kotlin", "c++", "c#", "ruby", "php", "swift");
-
+    @PostConstruct
+    private void init() {
+        programmingLanguages = stackExchangeApiConfig.getProgrammingLanguages();
+    }
     private final int fixedDelay = 5 * 60 * 1000; // 10 minutes
 
 

@@ -1,6 +1,8 @@
 package nidhal.stackoverflowstatus.controller;
 
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import nidhal.stackoverflowstatus.configuration.StackExchangeApiConfig;
 import nidhal.stackoverflowstatus.service.StackExchangeApiService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +19,16 @@ import java.util.concurrent.Executors;
 public class StackExchangeApiController {
 
     private final StackExchangeApiService stackExchangeApiService;
+    private final StackExchangeApiConfig stackExchangeApiConfig;
+    private List<String> programmingLanguages;
+
+    @PostConstruct
+    private void init() {
+        programmingLanguages = stackExchangeApiConfig.getProgrammingLanguages();
+    }
 
     @GetMapping
     public String storeJavaQuestions() {
-        List<String> programmingLanguages = List.of("java", "python", "javascript", "go", "kotlin", "c++", "c#", "ruby", "php", "swift");
-
         int maxThreads = 3;
         ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
 
