@@ -113,6 +113,15 @@ public class QuestionService {
         return questionsCountByDayOfWeek;
     }
 
+    @Cacheable(value = "totalNumberOfQuestionsPerProgrammingLanguageCache")
+    public LinkedHashMap<String,Integer> getTotalNumberOfQuestionsPerProgrammingLanguage() {
+        LinkedHashMap<String, Integer> numberOfQuestionsPerProgrammingLanguage = new LinkedHashMap<>();
+        for (String programmingLanguage : programmingLanguages) {
+            numberOfQuestionsPerProgrammingLanguage.put(programmingLanguage, getNumberOfQuestionsForProgrammingLanguage(programmingLanguage));
+        }
+        return numberOfQuestionsPerProgrammingLanguage;
+    }
+
     // ------------------------ ANSWERED & UNANSWERED QUESTIONS ------------------------ //
     @Cacheable(value = "totalNumberOfAnsweredQuestionsCache")
     public int getTotalNumberOfAnsweredQuestions() {

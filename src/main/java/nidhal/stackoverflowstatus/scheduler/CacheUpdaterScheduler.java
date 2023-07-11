@@ -56,6 +56,8 @@ public class CacheUpdaterScheduler {
         updateCachedTotalNumberOfOpenQuestions();
         // update the total number of open and closed questions
         updateCachedTotalOpenAndClosedQuestions();
+        // update the total number of questions per programming language
+        updateCachedTotalNumberOfQuestionsPerProgrammingLanguage();
 
         log.info("ALL CACHED DATA UPDATED.");
     }
@@ -102,6 +104,11 @@ public class CacheUpdaterScheduler {
     @CachePut(value = "numberOfQuestionsPerDayCache", key = "#programmingLanguage")
     public void updateCachedNumberOfQuestionsPerDay(String programmingLanguage) {
         questionService.getNumberOfQuestionsPerDayForProgrammingLanguage(programmingLanguage);
+    }
+
+    @CachePut(value = "totalNumberOfQuestionsPerProgrammingLanguageCache")
+    public void updateCachedTotalNumberOfQuestionsPerProgrammingLanguage() {
+        questionService.getTotalNumberOfQuestionsPerProgrammingLanguage();
     }
 
     // ------------------------ ANSWERED & UNANSWERED QUESTIONS ------------------------ //

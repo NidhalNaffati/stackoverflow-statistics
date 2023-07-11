@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
@@ -47,6 +48,11 @@ public class QuestionController {
     @GetMapping("number-of-questions-per-day/{programmingLanguage}")
     public Map<String, Integer> retrieveNumberOfQuestionsPerDayForProgrammingLanguage(@PathVariable String programmingLanguage) {
         return questionService.getNumberOfQuestionsPerDayForProgrammingLanguage(programmingLanguage);
+    }
+
+    @GetMapping("number-of-questions-per-programming-language")
+    public LinkedHashMap<String,Integer> retrieveTotalNumberOfQuestionsPerProgrammingLanguage() {
+        return questionService.getTotalNumberOfQuestionsPerProgrammingLanguage();
     }
 
     // ------------------------ ANSWERED & UNANSWERED QUESTIONS ------------------------ //
