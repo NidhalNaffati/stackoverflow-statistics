@@ -9,8 +9,11 @@ const props = defineProps({
     required: false
   }
 })
-
 const chartData = ref(null)
+
+onMounted(() => {
+  fetchData()
+})
 
 const fetchData = async () => {
   try {
@@ -43,100 +46,88 @@ const fetchData = async () => {
 }
 
 function createChart() {
-  const chartElement = document.getElementById('chart-bars')
-  const ctx = chartElement.getContext('2d')
+  const ctx2 = document.getElementById('chart-bar').getContext('2d')
+
+  const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
   const data = Object.values(chartData.value)
-  const labels = Object.keys(chartData.value)
-  // const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
-  new Chart(ctx, {
+  new Chart(ctx2, {
     type: 'bar',
     data: {
       labels: labels,
       datasets: [
         {
-          label: 'Number of Questions asked',
-          tension: 0.4,
-          borderWidth: 0,
-          borderRadius: 4,
-          borderSkipped: false,
-          backgroundColor: '#fff',
+          label: 'Earnings',
+          fill: true,
           data: data,
-          maxBarThickness: 6
+          backgroundColor: 'rgb(54,185,204)',
+          borderColor: 'rgba(78, 115, 223, 1)'
         }
       ]
     },
     options: {
-      responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
+      legend: {
+        display: false,
+        labels: {
+          fontStyle: 'normal'
         }
       },
-      interaction: {
-        intersect: false,
-        mode: 'index'
+      title: {
+        fontStyle: 'normal'
       },
       scales: {
-        y: {
-          grid: {
-            drawBorder: false,
-            display: false,
-            drawOnChartArea: false,
-            drawTicks: false
-          },
-          ticks: {
-            suggestedMin: 0,
-            suggestedMax: Math.max(...data) + 50,
-            beginAtZero: true,
-            padding: 15,
-            font: {
-              size: 14,
-              family: 'Open Sans',
-              style: 'normal',
-              lineHeight: 2
+        xAxes: [
+          {
+            gridLines: {
+              color: 'rgb(234, 236, 244)',
+              zeroLineColor: 'rgb(234, 236, 244)',
+              drawBorder: false,
+              drawTicks: false,
+              borderDash: ['2'],
+              zeroLineBorderDash: ['2'],
+              drawOnChartArea: false
             },
-            color: '#fff'
+            ticks: {
+              fontColor: '#858796',
+              fontStyle: 'normal',
+              padding: 20
+            }
           }
-        },
-        x: {
-          grid: {
-            drawBorder: false,
-            display: false,
-            drawOnChartArea: false,
-            drawTicks: false
-          },
-          ticks: {
-            font: {
-              size: 14,
-              family: 'Open Sans',
-              style: 'normal',
-              lineHeight: 2
+        ],
+        yAxes: [
+          {
+            gridLines: {
+              color: 'rgb(234, 236, 244)',
+              zeroLineColor: 'rgb(234, 236, 244)',
+              drawBorder: false,
+              drawTicks: false,
+              borderDash: ['2'],
+              zeroLineBorderDash: ['2']
             },
-            color: '#fff',
-            display: true
+            ticks: {
+              fontColor: '#858796',
+              fontStyle: 'normal',
+              padding: 20
+            }
           }
-        }
+        ]
       }
     }
   })
 }
-
-onMounted(() => {
-  fetchData()
-})
 </script>
 
 <template>
-  <div class="col-lg-5 mb-lg-0 mb-4">
-    <div class="card z-index-2">
-      <div class="card-body p-3">
-        <div class="bg-gradient-danger border-radius-lg py-3 pe-1 mb-3">
-          <div class="chart">
-            <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
-          </div>
+  <div class="col-lg-7 col-xl-8">
+    <div class="card shadow mb-4" id="custom">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">Number of questions per day</h6>
+      </div>
+      <div class="card-body">
+        <div class="chart-area">
+          <canvas id="chart-bar" class="chart-canvas"></canvas>
         </div>
       </div>
     </div>

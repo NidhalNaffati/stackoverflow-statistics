@@ -48,23 +48,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
-    <div class="card">
-      <div class="card-body p-3">
-        <div class="row">
-          <div class="col-8">
-            <div class="numbers">
-              <p class="text-sm mb-0 text-capitalize font-weight-bold">Closed Questions</p>
-              <h5 class="font-weight-bolder mb-0">
-                {{ serverData }}
-              </h5>
+  <div class="col-md-6 col-xl-3 mb-4">
+    <div class="card shadow border-start-warning py-2">
+      <div class="card-body">
+        <div class="row align-items-center no-gutters">
+          <div class="col me-2">
+            <div class="text-uppercase text-warning fw-bold text">
+              <span>Pending Requests</span>
+            </div>
+            <div class="text-dark fw-bold h5 mb-0">
+              <span>{{ serverData }}</span>
             </div>
           </div>
-          <div class="col-4 text-end">
-            <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-              <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-            </div>
-          </div>
+          <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"></i></div>
         </div>
       </div>
     </div>

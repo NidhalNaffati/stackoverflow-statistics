@@ -58,10 +58,16 @@ function createChart() {
       labels: labels,
       datasets: [
         {
+          label: 'Earnings',
+          fill: true,
+          data: ['400', '200', '170', '333', '415', '180', '280'],
+          backgroundColor: 'rgba(78, 115, 223, 0.05)',
+          borderColor: 'rgba(78, 115, 223, 1)'
+        },
+        {
           label: 'Java',
           tension: 0.4,
           pointRadius: 0,
-          // set the color for the line brown
           borderColor: '#763f04',
           borderWidth: 3,
           fill: true,
@@ -161,58 +167,52 @@ function createChart() {
       ]
     },
     options: {
-      responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
+      legend: {
+        display: false,
+        labels: {
+          fontStyle: 'normal'
         }
       },
-      interaction: {
-        intersect: false,
-        mode: 'index'
+      title: {
+        fontStyle: 'normal'
       },
       scales: {
-        y: {
-          grid: {
-            drawBorder: false,
-            display: true,
-            drawOnChartArea: true,
-            drawTicks: false,
-            borderDash: [5, 5]
-          },
-          ticks: {
-            display: true,
-            padding: 10,
-            color: '#b2b9bf',
-            font: {
-              size: 11,
-              family: 'Open Sans',
-              style: 'normal',
-              lineHeight: 2
+        xAxes: [
+          {
+            gridLines: {
+              color: 'rgb(234, 236, 244)',
+              zeroLineColor: 'rgb(234, 236, 244)',
+              drawBorder: false,
+              drawTicks: false,
+              borderDash: ['2'],
+              zeroLineBorderDash: ['2'],
+              drawOnChartArea: false
+            },
+            ticks: {
+              fontColor: '#858796',
+              fontStyle: 'normal',
+              padding: 20
             }
           }
-        },
-        x: {
-          grid: {
-            drawBorder: false,
-            display: false,
-            drawOnChartArea: false,
-            drawTicks: false,
-            borderDash: [5, 5]
-          },
-          ticks: {
-            display: true,
-            color: '#b2b9bf',
-            padding: 20,
-            font: {
-              size: 11,
-              family: 'Open Sans',
-              style: 'normal',
-              lineHeight: 2
+        ],
+        yAxes: [
+          {
+            gridLines: {
+              color: 'rgb(234, 236, 244)',
+              zeroLineColor: 'rgb(234, 236, 244)',
+              drawBorder: false,
+              drawTicks: false,
+              borderDash: ['2'],
+              zeroLineBorderDash: ['2']
+            },
+            ticks: {
+              fontColor: '#858796',
+              fontStyle: 'normal',
+              padding: 20
             }
           }
-        }
+        ]
       }
     }
   })
@@ -224,18 +224,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="col-lg-7">
-    <div class="card z-index-2">
-      <div class="card-header pb-0">
-        <h6>Rating by questions for each day</h6>
-        <p class="text-sm">
-          <i class="fa fa-arrow-up text-success"></i>
-          <span class="font-weight-bold">idk</span> This week
-        </p>
-      </div>
-      <div class="card-body p-3">
-        <div class="chart">
-          <canvas id="chart-line" class="chart-canvas" height="450"></canvas>
+  <div class="row">
+    <div class="col-lg-7 col-xl-8 col-xxl-12">
+      <div class="card shadow mb-4" id="custom">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h6 class="text-primary fw-bold m-0">
+            Number of questions asked for each programming languages (daily)
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="chart-area">
+            <canvas id="chart-line" class="chart-canvas"></canvas>
+          </div>
         </div>
       </div>
     </div>

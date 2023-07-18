@@ -1,82 +1,95 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import axiosInstance from '@/api/axiosInstance'
-import Chart from 'chart.js/auto'
 
-const totalNumberOfQuestionsPerProgrammingLanguage = ref({})
+const chartData = ref(null)
 
-// Fetch data from the server
+onMounted(() => {
+  fetchData()
+})
+
 const fetchData = async () => {
   try {
-    const totalNumberOfQuestionsPerProgrammingLanguageResponse = await axiosInstance.get(
-      'number-of-questions-per-programming-language'
-    )
-    if (totalNumberOfQuestionsPerProgrammingLanguageResponse.status === 200) {
-      totalNumberOfQuestionsPerProgrammingLanguage.value =
-        totalNumberOfQuestionsPerProgrammingLanguageResponse.data
+    const response = await axiosInstance.get('number-of-questions-per-day')
+    if (response.status === 200) {
+      chartData.value = await response.data
       createChart()
+    } else {
+      console.error('Error status:', response.status)
+      console.error('Error:', response)
     }
   } catch (error) {
-    console.error(error)
+    console.error('Error:', error)
   }
 }
 
 function createChart() {
-  const chartElement = document.getElementById('chart-polar')
-  const ctx = chartElement.getContext('2d')
+  const ctx = document.getElementById('chart-polar').getContext('2d')
 
-  const programmingLanguages = Object.keys(totalNumberOfQuestionsPerProgrammingLanguage.value)
-  const dataValues = Object.values(totalNumberOfQuestionsPerProgrammingLanguage.value)
-  const backgroundColors = [
-    'rgba(255, 0, 0, 0.7)',
-    'rgba(0, 255, 0, 0.7)',
-    'rgba(0, 0, 255, 0.7)',
-    'rgba(255, 255, 0, 0.7)',
-    'rgba(255, 0, 255, 0.7)',
-    'rgba(0, 255, 255, 0.7)',
-    'rgba(128, 0, 0, 0.7)',
-    'rgba(0, 128, 0, 0.7)',
-    'rgba(0, 0, 128, 0.7)',
-    'rgba(128, 128, 0, 0.7)'
-  ]
+  const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+  const data = Object.values(chartData.value)
 
   new Chart(ctx, {
     type: 'polarArea',
     data: {
-      labels: programmingLanguages,
+      labels: labels,
       datasets: [
         {
-          data: dataValues,
-          backgroundColor: backgroundColors
+          label: 'Number of Questions',
+          data: data,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 206, 86, 0.7)',
+            'rgba(75, 192, 192, 0.7)',
+            'rgba(153, 102, 255, 0.7)',
+            'rgba(255, 159, 64, 0.7)',
+            'rgba(94, 184, 186, 0.7)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(94, 184, 186, 1)'
+          ],
+          borderWidth: 1
         }
       ]
     },
     options: {
-      responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        title: {
-          display: true,
-          text: 'Number of Asked Questions by Programming Language'
+      legend: {
+        display: false,
+        labels: {
+          fontStyle: 'normal'
+        }
+      },
+      title: {
+        fontStyle: 'normal'
+      },
+      scale: {
+        ticks: {
+          beginAtZero: true
         }
       }
     }
   })
 }
-
-onMounted(() => {
-  fetchData()
-})
 </script>
 
 <template>
-  <div class="col-lg-5 mb-lg-0 mb-4">
-    <div class="card z-index-2">
-      <div class="card-body p-3">
-        <div class="bg-gradient-primary border-radius-lg py-3 pe-1 mb-3">
-          <div class="chart">
-            <canvas id="chart-polar" class="chart-canvas" height="300"></canvas>
-          </div>
+  <div class="col-lg-7 col-xl-3">
+    <div class="card shadow mb-4" id="custom">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">Number of questions per day</h6>
+      </div>
+      <div class="card-body">
+        <div class="chart-area">
+          <canvas id="chart-polar" class="chart-canvas"></canvas>
         </div>
       </div>
     </div>
