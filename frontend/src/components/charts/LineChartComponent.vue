@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import {ref, onMounted} from 'vue'
 import axiosInstance from '@/api/axiosInstance'
 
 const javaData = ref(null)
@@ -58,111 +58,68 @@ function createChart() {
       labels: labels,
       datasets: [
         {
-          label: 'Earnings',
-          fill: true,
-          data: ['400', '200', '170', '333', '415', '180', '280'],
-          backgroundColor: 'rgba(78, 115, 223, 0.05)',
-          borderColor: 'rgba(78, 115, 223, 1)'
-        },
-        {
           label: 'Java',
-          tension: 0.4,
-          pointRadius: 0,
+          pointRadius: 2,
           borderColor: '#763f04',
-          borderWidth: 3,
-          fill: true,
           data: javaData.value,
-          maxBarThickness: 6
         },
         {
           label: 'Python',
-          tension: 0.4,
-          pointRadius: 0,
+          pointRadius: 2,
           borderColor: '#8154f3',
-          borderWidth: 3,
-          fill: true,
           data: pythonData.value,
-          maxBarThickness: 6
         },
         {
           label: 'Javascript',
-          tension: 0.4,
-          pointRadius: 0,
+          pointRadius: 2,
           borderColor: '#FFC107FF',
-          borderWidth: 3,
-          fill: true,
           data: javascriptData.value,
-          maxBarThickness: 6
         },
         {
           label: 'C++',
-          tension: 0.4,
-          pointRadius: 0,
+          pointRadius: 2,
           borderColor: '#e834c5',
-          borderWidth: 3,
-          fill: true,
           data: cppData.value,
-          maxBarThickness: 6
         },
         {
           label: 'C#',
-          tension: 0.4,
-          pointRadius: 0,
+          pointRadius: 2,
           borderColor: '#47ba19',
-          borderWidth: 3,
-          fill: true,
           data: csharpData.value,
-          maxBarThickness: 6
+
         },
         {
           label: 'Go',
-          tension: 0.4,
-          pointRadius: 0,
+          pointRadius: 2,
           borderColor: '#1944ba',
-          borderWidth: 3,
-          fill: true,
           data: goData.value,
-          maxBarThickness: 6
+
         },
         {
           label: 'Kotlin',
-          tension: 0.4,
-          pointRadius: 0,
+          pointRadius: 2,
           borderColor: '#1944ba',
-          borderWidth: 3,
-          fill: true,
           data: kotlinData.value,
-          maxBarThickness: 6
+
         },
         {
           label: 'PHP',
-          tension: 0.4,
-          pointRadius: 0,
+          pointRadius: 2,
           borderColor: '#4a557b',
-          borderWidth: 3,
-          fill: true,
           data: phpData.value,
-          maxBarThickness: 6
+
         },
         {
           label: 'Swift',
-          tension: 0.4,
-          pointRadius: 0,
+          pointRadius: 2,
           borderColor: '#ee345e',
-          borderWidth: 3,
-          fill: true,
           data: swiftData.value,
-          maxBarThickness: 6
         },
         {
           label: 'Ruby',
-          tension: 0.4,
-          pointRadius: 0,
+          pointRadius: 2,
           borderColor: '#640b22',
-          borderWidth: 3,
-          fill: true,
           data: goData.value,
-          maxBarThickness: 6
         }
       ]
     },
@@ -229,7 +186,7 @@ onMounted(() => {
       <div class="card shadow mb-4" id="custom">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h6 class="text-primary fw-bold m-0">
-            Number of questions asked for each programming languages (daily)
+            Number of daily questions asked for each programming languages
           </h6>
         </div>
         <div class="card-body">
