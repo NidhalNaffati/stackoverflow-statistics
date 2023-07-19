@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue'
+import { onMounted, ref } from 'vue'
 import axiosInstance from '@/api/axiosInstance'
 
 const props = defineProps({
@@ -25,7 +25,7 @@ const fetchData = async () => {
         closedQuestions.value = await closedQuestionResponse.data
         totalQuestions.value = await totalQuestionsResponse.data
         percentageOfClosedQuestions.value = Math.round(
-            (closedQuestions.value / totalQuestions.value) * 100
+          (closedQuestions.value / totalQuestions.value) * 100
         )
         console.log('closedQuestions.value:', closedQuestions.value)
         console.log('totalQuestions.value:', totalQuestions.value)
@@ -38,7 +38,7 @@ const fetchData = async () => {
     } else {
       // otherwise, we want to get questions for a specific programming language
       const response = await axiosInstance.get(
-          'number-of-closed-questions/' + props.programmingLanguage
+        'number-of-closed-questions/' + props.programmingLanguage
       )
       if (response.status === 200) {
         closedQuestions.value = await response.data
@@ -74,11 +74,12 @@ onMounted(() => {
               </div>
               <div class="col">
                 <div class="progress progress">
-                  <div class="progress-bar bg-warning"
-                       aria-valuenow="{{ percentageOfClosedQuestions }}"
-                       aria-valuemin="0"
-                       aria-valuemax="100"
-                       :style="{ width: percentageOfClosedQuestions + '%' }"
+                  <div
+                    class="progress-bar bg-warning"
+                    aria-valuenow="{{ percentageOfClosedQuestions }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    :style="{ width: percentageOfClosedQuestions + '%' }"
                   >
                     <span class="visually">{{ percentageOfClosedQuestions }}%</span>
                   </div>
@@ -87,7 +88,7 @@ onMounted(() => {
             </div>
           </div>
           <div class="col-auto">
-            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+            <i class="fa-solid fa-rectangle-xmark fa-2x text-gray-300"></i>
           </div>
         </div>
       </div>

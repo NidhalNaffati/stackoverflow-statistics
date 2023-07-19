@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue'
+import { onMounted, ref } from 'vue'
 import axiosInstance from '@/api/axiosInstance'
 
 const props = defineProps({
@@ -25,7 +25,7 @@ async function fetchData() {
         answeredQuestions.value = await answeredQuestionsResponse.data
         totalQuestions.value = await totalQuestionsResponse.data
         percentageOfAnsweredQuestions.value = Math.round(
-            (answeredQuestions.value / totalQuestions.value) * 100
+          (answeredQuestions.value / totalQuestions.value) * 100
         )
       } else {
         console.error('Error status:', answeredQuestionsResponse.status)
@@ -34,7 +34,7 @@ async function fetchData() {
     } else {
       // otherwise, we want to get questions for a specific programming language
       const response = await axiosInstance.get(
-          'number-of-answered-questions/' + props.programmingLanguage
+        'number-of-answered-questions/' + props.programmingLanguage
       )
       if (response.status === 200) {
         answeredQuestions.value = await response.data
@@ -70,11 +70,12 @@ onMounted(() => {
               </div>
               <div class="col">
                 <div class="progress progress">
-                  <div class="progress-bar bg-primary"
-                       aria-valuenow="{{ percentageOfAnsweredQuestions }}"
-                       aria-valuemin="0"
-                       aria-valuemax="100"
-                       :style="{ width: percentageOfAnsweredQuestions + '%' }"
+                  <div
+                    class="progress-bar bg-primary"
+                    aria-valuenow="{{ percentageOfAnsweredQuestions }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    :style="{ width: percentageOfAnsweredQuestions + '%' }"
                   >
                     <span class="visually">{{ percentageOfAnsweredQuestions }}%</span>
                   </div>
@@ -82,7 +83,9 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
+          <div class="col-auto">
+            <i class="fa-regular fa-lightbulb fa-2x text-gray-300"></i>
+          </div>
         </div>
       </div>
     </div>
