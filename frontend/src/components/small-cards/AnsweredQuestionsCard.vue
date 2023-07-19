@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import axiosInstance from '@/api/axiosInstance'
 
 const props = defineProps({
@@ -10,27 +10,34 @@ const props = defineProps({
   }
 })
 
-const serverData = ref(null)
+const answeredQuestions = ref(null)
+const totalQuestions = ref(null)
+const percentageOfAnsweredQuestions = ref(null)
 
 // Make a request to the server to retrieve data
-const fetchData = async () => {
+async function fetchData() {
   try {
     // if the programmingLanguage is 'all', then we want to get all questions
     if (props.programmingLanguage === 'all') {
-      const response = await axiosInstance.get('number-of-answered-questions')
-      if (response.status === 200) {
-        serverData.value = await response.data
+      const answeredQuestionsResponse = await axiosInstance.get('number-of-answered-questions')
+      const totalQuestionsResponse = await axiosInstance.get('number-of-asked-questions')
+      if (answeredQuestionsResponse.status === 200) {
+        answeredQuestions.value = await answeredQuestionsResponse.data
+        totalQuestions.value = await totalQuestionsResponse.data
+        percentageOfAnsweredQuestions.value = Math.round(
+            (answeredQuestions.value / totalQuestions.value) * 100
+        )
       } else {
-        console.error('Error status:', response.status)
-        console.error('Error:', response)
+        console.error('Error status:', answeredQuestionsResponse.status)
+        console.error('Error:', answeredQuestionsResponse)
       }
     } else {
       // otherwise, we want to get questions for a specific programming language
       const response = await axiosInstance.get(
-        'number-of-answered-questions/' + props.programmingLanguage
+          'number-of-answered-questions/' + props.programmingLanguage
       )
       if (response.status === 200) {
-        serverData.value = await response.data
+        answeredQuestions.value = await response.data
       } else {
         console.error('Error status:', response.status)
         console.error('Error:', response)
@@ -58,19 +65,18 @@ onMounted(() => {
             <div class="row g-0 align-items-center">
               <div class="col-auto">
                 <div class="text-dark fw-bold h5 mb-0 me-3">
-                  <span>{{ serverData }}</span>
+                  <span>{{ answeredQuestions }}</span>
                 </div>
               </div>
               <div class="col">
-                <div class="progress progress-sm">
-                  <div
-                    class="progress-bar bg-primary"
-                    aria-valuenow="25"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style="width: 25%"
+                <div class="progress progress">
+                  <div class="progress-bar bg-primary"
+                       aria-valuenow="{{ percentageOfAnsweredQuestions }}"
+                       aria-valuemin="0"
+                       aria-valuemax="100"
+                       :style="{ width: percentageOfAnsweredQuestions + '%' }"
                   >
-                    <span class="visually">25%</span>
+                    <span class="visually">{{ percentageOfAnsweredQuestions }}%</span>
                   </div>
                 </div>
               </div>
