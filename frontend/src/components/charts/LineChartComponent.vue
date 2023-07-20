@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import {ref, onMounted} from 'vue'
 import axiosInstance from '@/api/axiosInstance'
 
 const javaData = ref(null)
@@ -60,62 +60,66 @@ function createChart() {
         {
           label: 'Java',
           pointRadius: 2,
-          borderColor: '#b07219',
-          data: javaData.value
+          borderColor: '#763f04',
+          data: javaData.value,
         },
         {
           label: 'Python',
           pointRadius: 2,
-          borderColor: '#3572A5',
-          data: pythonData.value
+          borderColor: '#8154f3',
+          data: pythonData.value,
         },
         {
           label: 'Javascript',
           pointRadius: 2,
-          borderColor: '#f1e05a',
-          data: javascriptData.value
+          borderColor: '#FFC107FF',
+          data: javascriptData.value,
         },
         {
           label: 'C++',
           pointRadius: 2,
-          borderColor: '#f34b7d',
-          data: cppData.value
+          borderColor: '#e834c5',
+          data: cppData.value,
         },
         {
           label: 'C#',
           pointRadius: 2,
-          borderColor: '#178600',
-          data: csharpData.value
+          borderColor: '#47ba19',
+          data: csharpData.value,
+
         },
         {
           label: 'Go',
           pointRadius: 2,
-          borderColor: '#00ADD8',
-          data: goData.value
+          borderColor: '#1944ba',
+          data: goData.value,
+
         },
         {
           label: 'Kotlin',
           pointRadius: 2,
-          borderColor: '#A97BFF',
-          data: kotlinData.value
+          borderColor: '#1944ba',
+          data: kotlinData.value,
+
         },
         {
           label: 'PHP',
           pointRadius: 2,
-          borderColor: '#4F5D95',
-          data: phpData.value
+          borderColor: '#4a557b',
+          data: phpData.value,
+
         },
         {
           label: 'Swift',
           pointRadius: 2,
-          borderColor: '#F05138',
-          data: swiftData.value
+          borderColor: '#ee345e',
+          data: swiftData.value,
         },
         {
           label: 'Ruby',
           pointRadius: 2,
-          borderColor: '#701516',
-          data: goData.value
+          borderColor: '#640b22',
+          data: goData.value,
         }
       ]
     },

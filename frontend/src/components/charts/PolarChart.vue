@@ -10,7 +10,7 @@ onMounted(() => {
 
 const fetchData = async () => {
   try {
-    const response = await axiosInstance.get('number-of-questions-per-programming-language')
+    const response = await axiosInstance.get('number-of-questions-per-day')
     if (response.status === 200) {
       chartData.value = await response.data
       createChart()
@@ -26,7 +26,8 @@ const fetchData = async () => {
 function createChart() {
   const ctx = document.getElementById('chart-polar').getContext('2d')
 
-  const labels = Object.keys(chartData.value)
+  const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
   const data = Object.values(chartData.value)
 
   new Chart(ctx, {
@@ -38,25 +39,31 @@ function createChart() {
           label: 'Number of Questions',
           data: data,
           backgroundColor: [
-            '#b07219',
-            '#3572A5',
-            '#f1e05a',
-            '#f34b7d',
-            '#178600',
-            '#00ADD8',
-            '#A97BFF',
-            '#4F5D95',
-            '#F05138',
-            '#701516'
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 206, 86, 0.7)',
+            'rgba(75, 192, 192, 0.7)',
+            'rgba(153, 102, 255, 0.7)',
+            'rgba(255, 159, 64, 0.7)',
+            'rgba(94, 184, 186, 0.7)'
           ],
-          borderWidth: 0
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(94, 184, 186, 1)'
+          ],
+          borderWidth: 1
         }
       ]
     },
     options: {
       maintainAspectRatio: false,
       legend: {
-        display: true,
+        display: false,
         labels: {
           fontStyle: 'normal'
         }
@@ -78,10 +85,10 @@ function createChart() {
   <div class="col-lg-7 col-xl-3">
     <div class="card shadow mb-4" id="custom">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <h6 class="text-primary fw-bold m-0">Number of questions per programming language</h6>
+        <h6 class="text-primary fw-bold m-0">Number of questions per day</h6>
       </div>
       <div class="card-body">
-        <div class="chart-area polar-chart">
+        <div class="chart-area">
           <canvas id="chart-polar" class="chart-canvas"></canvas>
         </div>
       </div>
@@ -89,8 +96,4 @@ function createChart() {
   </div>
 </template>
 
-<style scoped>
-.polar-chart {
-  height: 500px !important;
-}
-</style>
+<style scoped></style>
