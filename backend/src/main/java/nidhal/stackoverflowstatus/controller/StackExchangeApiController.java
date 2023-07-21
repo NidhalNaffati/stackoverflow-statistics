@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -27,17 +29,38 @@ public class StackExchangeApiController {
         programmingLanguages = stackExchangeApiConfig.getProgrammingLanguages();
     }
 
-    @GetMapping
-    public String storeJavaQuestions() {
+    @GetMapping("/this-week")
+    public String storeThisWeekQuestions() {
+
+        long oneWeekAgoInSeconds = Instant.now().minus(Duration.ofDays(7)).getEpochSecond();
+
         int maxThreads = 3;
         ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
 
         for (String language : programmingLanguages) {
-            CompletableFuture.runAsync(() -> stackExchangeApiService.storeAllQuestionRelatedTo(language), executorService);
+            CompletableFuture.runAsync(() -> stackExchangeApiService.storeAllQuestionRelatedTo(language, oneWeekAgoInSeconds), executorService);
         }
 
         executorService.shutdown();
 
-        return "Questions stored successfully";
+        return "This week's questions up to date";
+    }
+
+
+    @GetMapping("/this-day")
+    public String storeThisDayQuestions() {
+
+        long oneDayAgoInSeconds = Instant.now().minus(Duration.ofDays(1)).getEpochSecond();
+
+        int maxThreads = 3;
+        ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
+
+        for (String language : programmingLanguages) {
+            CompletableFuture.runAsync(() -> stackExchangeApiService.storeAllQuestionRelatedTo(language, oneDayAgoInSeconds), executorService);
+        }
+
+        executorService.shutdown();
+
+        return "Today's questions up to date";
     }
 }

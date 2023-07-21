@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -45,18 +43,15 @@ public class StackExchangeApiService {
         this.questionRepository = questionRepository;
     }
 
-    public void storeAllQuestionRelatedTo(String programingLanguage) {
+    public void storeAllQuestionRelatedTo(String programingLanguage, long fromdate) {
         boolean hasMore = true;
         int page = 1;
         int updatedQuestions = 0;
         int newQuestions = 0;
 
-        // Calculate the timestamp for one week ago
-        long oneWeekAgoInSeconds = Instant.now().minus(Duration.ofDays(7)).getEpochSecond();
-
         // Build the API URL
         String baseUrl = stackExchangeApiConfig.getBaseUrl() + "/questions"
-                         + "?fromdate=" + oneWeekAgoInSeconds
+                         + "?fromdate=" + fromdate
                          + "&order=desc"
                          + "&sort=creation"
                          + "&tagged=" + programingLanguage

@@ -26,7 +26,8 @@ public class CacheUpdaterScheduler {
     private void init() {
         programmingLanguages = stackExchangeApiConfig.getProgrammingLanguages();
     }
-    private final int fixedDelay = 5 * 60 * 1000; // 10 minutes
+
+    private final int fixedDelay = 660; // ≈ 11 minutes
 
 
     @Scheduled(fixedDelay = fixedDelay)
