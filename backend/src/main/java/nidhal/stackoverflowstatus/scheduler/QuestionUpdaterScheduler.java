@@ -16,7 +16,7 @@ import java.util.List;
 @Configuration
 @EnableScheduling
 @AllArgsConstructor
-public class QuestionUpdater {
+public class QuestionUpdaterScheduler {
 
     StackExchangeApiService stackExchangeApiService;
     private final StackExchangeApiConfig stackExchangeApiConfig;
@@ -27,10 +27,10 @@ public class QuestionUpdater {
         programmingLanguages = stackExchangeApiConfig.getProgrammingLanguages();
     }
 
-    private final int fixedDelayForTodayQuestions = 655; // ≈ 11 minutes
+    private final int fixedDelayForTodayQuestions = 655 * 1000; // ≈ 11 minutes
     private final int fixedDelayForWeekQuestions = 2 * 60 * 60 * 1000; // 2 hours
 
-    @Scheduled(fixedDelay = fixedDelayForTodayQuestions)
+    @Scheduled(fixedDelay = fixedDelayForTodayQuestions, initialDelay = fixedDelayForTodayQuestions)
     public void updateTodayQuestions() {
         long onDayAgoInSeconds = Instant.now().minus(Duration.ofDays(1)).getEpochSecond();
         for (String language : programmingLanguages)
