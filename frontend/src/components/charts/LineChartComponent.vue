@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref, onMounted} from 'vue'
 import axiosInstance from '@/api/axiosInstance'
+import programmingLanguageColors from "@/assets/js/programmingLanguageColors";
 
 const javaData = ref(null)
 const pythonData = ref(null)
@@ -60,65 +61,65 @@ function createChart() {
         {
           label: 'Java',
           pointRadius: 2,
-          borderColor: '#763f04',
+          borderColor: programmingLanguageColors.java,
           data: javaData.value,
         },
         {
           label: 'Python',
           pointRadius: 2,
-          borderColor: '#8154f3',
+          borderColor: programmingLanguageColors.python,
           data: pythonData.value,
         },
         {
           label: 'Javascript',
           pointRadius: 2,
-          borderColor: '#FFC107FF',
+          borderColor: programmingLanguageColors.javascript,
           data: javascriptData.value,
         },
         {
           label: 'C++',
           pointRadius: 2,
-          borderColor: '#e834c5',
+          borderColor: programmingLanguageColors.cpp,
           data: cppData.value,
         },
         {
           label: 'C#',
           pointRadius: 2,
-          borderColor: '#47ba19',
+          borderColor: programmingLanguageColors.csharp,
           data: csharpData.value,
 
         },
         {
           label: 'Go',
           pointRadius: 2,
-          borderColor: '#1944ba',
+          borderColor: programmingLanguageColors.go,
           data: goData.value,
 
         },
         {
           label: 'Kotlin',
           pointRadius: 2,
-          borderColor: '#1944ba',
+          borderColor: programmingLanguageColors.kotlin,
           data: kotlinData.value,
 
         },
         {
           label: 'PHP',
           pointRadius: 2,
-          borderColor: '#4a557b',
+          borderColor: programmingLanguageColors.php,
           data: phpData.value,
 
         },
         {
           label: 'Swift',
           pointRadius: 2,
-          borderColor: '#ee345e',
+          borderColor: programmingLanguageColors.swift,
           data: swiftData.value,
         },
         {
           label: 'Ruby',
           pointRadius: 2,
-          borderColor: '#640b22',
+          borderColor: programmingLanguageColors.ruby,
           data: goData.value,
         }
       ]

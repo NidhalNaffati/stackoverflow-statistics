@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import {ref, onMounted} from 'vue'
 import axiosInstance from '@/api/axiosInstance'
+import programmingLanguageColors from "@/assets/js/programmingLanguageColors";
 
 const chartData = ref(null)
 
@@ -10,7 +11,7 @@ onMounted(() => {
 
 const fetchData = async () => {
   try {
-    const response = await axiosInstance.get('number-of-questions-per-day')
+    const response = await axiosInstance.get('number-of-questions-per-programming-language')
     if (response.status === 200) {
       chartData.value = await response.data
       createChart()
@@ -26,8 +27,7 @@ const fetchData = async () => {
 function createChart() {
   const ctx = document.getElementById('chart-polar').getContext('2d')
 
-  const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-
+  const labels = Object.keys(chartData.value)
   const data = Object.values(chartData.value)
 
   new Chart(ctx, {
@@ -39,22 +39,16 @@ function createChart() {
           label: 'Number of Questions',
           data: data,
           backgroundColor: [
-            'rgba(255, 99, 132, 0.7)',
-            'rgba(54, 162, 235, 0.7)',
-            'rgba(255, 206, 86, 0.7)',
-            'rgba(75, 192, 192, 0.7)',
-            'rgba(153, 102, 255, 0.7)',
-            'rgba(255, 159, 64, 0.7)',
-            'rgba(94, 184, 186, 0.7)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)',
-            'rgba(94, 184, 186, 1)'
+            programmingLanguageColors.java,
+            programmingLanguageColors.python,
+            programmingLanguageColors.javascript,
+            programmingLanguageColors.go,
+            programmingLanguageColors.kotlin,
+            programmingLanguageColors.swift,
+            programmingLanguageColors.php,
+            programmingLanguageColors.ruby,
+            programmingLanguageColors.cpp,
+            programmingLanguageColors.csharp
           ],
           borderWidth: 1
         }
@@ -63,7 +57,7 @@ function createChart() {
     options: {
       maintainAspectRatio: false,
       legend: {
-        display: false,
+        display: true,
         labels: {
           fontStyle: 'normal'
         }
@@ -88,7 +82,7 @@ function createChart() {
         <h6 class="text-primary fw-bold m-0">Number of questions per day</h6>
       </div>
       <div class="card-body">
-        <div class="chart-area">
+        <div class="chart-area polar-chart">
           <canvas id="chart-polar" class="chart-canvas"></canvas>
         </div>
       </div>
@@ -96,4 +90,8 @@ function createChart() {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.polar-chart {
+  height: 500px !important;
+}
+</style>
