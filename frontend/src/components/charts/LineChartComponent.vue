@@ -127,7 +127,7 @@ function createChart() {
     options: {
       maintainAspectRatio: false,
       legend: {
-        display: false,
+        display: true,
         labels: {
           fontStyle: 'normal'
         }
@@ -200,4 +200,8 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.chart-area {
+  height: 400px;
+}
+</style>
