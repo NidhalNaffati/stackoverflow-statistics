@@ -2,6 +2,7 @@ package nidhal.stackoverflowstatus.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nidhal.stackoverflowstatus.entity.Question;
 import nidhal.stackoverflowstatus.service.QuestionService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -51,7 +53,7 @@ public class QuestionController {
     }
 
     @GetMapping("number-of-questions-per-programming-language")
-    public LinkedHashMap<String,Integer> retrieveTotalNumberOfQuestionsPerProgrammingLanguage() {
+    public LinkedHashMap<String, Integer> retrieveTotalNumberOfQuestionsPerProgrammingLanguage() {
         return questionService.getTotalNumberOfQuestionsPerProgrammingLanguage();
     }
 
@@ -117,4 +119,25 @@ public class QuestionController {
         return questionService.getNumberOfOpenAndClosedQuestionsForProgrammingLanguage(programmingLanguage);
     }
 
+    // ------------------------ TOP VIEWS QUESTIONS ------------------------ //
+    @GetMapping("top-views/{numberOfQuestions}")
+    public List<Question> retrieveTopViewsQuestions(@PathVariable int numberOfQuestions) {
+        return questionService.getTopViewsQuestions(numberOfQuestions);
+    }
+
+    @GetMapping("top-views/{programmingLanguage}/{numberOfQuestions}")
+    public List<Question> retrieveTopViewsQuestionsForProgrammingLanguage(@PathVariable String programmingLanguage, @PathVariable int numberOfQuestions) {
+        return questionService.getTopViewsQuestionsForProgrammingLanguage(programmingLanguage, numberOfQuestions);
+    }
+
+    // ------------------------ TOP SCORE QUESTIONS ------------------------ //
+    @GetMapping("top-score/{numberOfQuestions}")
+    public List<Question> retrieveTopScoreQuestions(@PathVariable int numberOfQuestions) {
+        return questionService.getTopScoreQuestions(numberOfQuestions);
+    }
+
+    @GetMapping("top-score/{programmingLanguage}/{numberOfQuestions}")
+    public List<Question> retrieveTopScoreQuestionsForProgrammingLanguage(@PathVariable String programmingLanguage, @PathVariable int numberOfQuestions) {
+        return questionService.getTopScoreQuestionsForProgrammingLanguage(programmingLanguage, numberOfQuestions);
+    }
 }

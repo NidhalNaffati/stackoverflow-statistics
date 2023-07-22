@@ -1,6 +1,7 @@
 package nidhal.stackoverflowstatus.dao;
 
 import lombok.AllArgsConstructor;
+import nidhal.stackoverflowstatus.entity.Question;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -9,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -388,5 +390,234 @@ public class QuestionDao {
         }
         return count;
     }
+
+    public List<Question> findByTopScore(int limit) {
+        // Prepare the SQL query
+        String sqlQuery = """
+                SELECT q.question_id, q.is_answered, q.title, q.link, q.score, q.answer_count, q.accepted_answer_id, q.view_count,
+                       q.creation_date, q.closed_date, q.last_activity_date, q.last_edit_date,
+                       qt.tags
+                FROM question q
+                INNER JOIN (
+                    SELECT question_question_id, STRING_AGG(tags, ',') AS tags
+                    FROM question_tags
+                    GROUP BY question_question_id
+                ) qt ON q.question_id = qt.question_question_id
+                ORDER BY q.score DESC
+                LIMIT ?
+                """;
+
+        List<Question> topQuestions = new ArrayList<>();
+
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sqlQuery)
+        ) {
+            // Set the limit parameter
+            statement.setInt(1, limit);
+
+            // Execute the query
+            ResultSet resultSet = statement.executeQuery();
+
+            // Process the result set
+            while (resultSet.next()) {
+                // Map the row to a Question object using the helper method
+                Question question = mapResultSetToQuestion(resultSet);
+
+                // Add the question to the list
+                topQuestions.add(question);
+            }
+
+            // Close the result set
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return topQuestions;
+    }
+
+    public List<Question> findByTopScoreAndTagsContains(String programmingLanguage, int limit) {
+        // Prepare the SQL query
+        String sqlQuery = """
+                SELECT q.question_id, q.is_answered, q.title, q.link, q.score, q.answer_count, q.accepted_answer_id, q.view_count,
+                       q.creation_date, q.closed_date, q.last_activity_date, q.last_edit_date,
+                       qt.tags
+                FROM question q
+                INNER JOIN (
+                    SELECT question_question_id, STRING_AGG(tags, ',') AS tags
+                    FROM question_tags
+                    GROUP BY question_question_id
+                ) qt ON q.question_id = qt.question_question_id
+                WHERE qt.tags LIKE ?
+                ORDER BY q.score DESC
+                LIMIT ?
+                """;
+
+        List<Question> topQuestions = new ArrayList<>();
+
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sqlQuery)
+        ) {
+            // Set the tag parameter with '%' to find any questions with the given programmingLanguage tag
+            statement.setString(1, programmingLanguage);
+            statement.setInt(2, limit);
+
+            // Execute the query
+            ResultSet resultSet = statement.executeQuery();
+
+            // Process the result set
+            while (resultSet.next()) {
+                // Map the row to a Question object using the helper method
+                Question question = mapResultSetToQuestion(resultSet);
+
+                // Add the question to the list
+                topQuestions.add(question);
+            }
+
+            // Close the result set
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return topQuestions;
+    }
+
+    public List<Question> findByTopViews(int limit) {
+        // Prepare the SQL query
+        String sqlQuery = """
+                SELECT q.question_id, q.is_answered, q.title, q.link, q.score, q.answer_count, q.accepted_answer_id, q.view_count,
+                       q.creation_date, q.closed_date, q.last_activity_date, q.last_edit_date,
+                       qt.tags
+                FROM question q
+                INNER JOIN (
+                    SELECT question_question_id, STRING_AGG(tags, ',') AS tags
+                    FROM question_tags
+                    GROUP BY question_question_id
+                ) qt ON q.question_id = qt.question_question_id
+                ORDER BY q.view_count DESC
+                LIMIT ?
+                """;
+
+        List<Question> topViewedQuestions = new ArrayList<>();
+
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sqlQuery)
+        ) {
+            // Set the limit parameter
+            statement.setInt(1, limit);
+
+            // Execute the query
+            ResultSet resultSet = statement.executeQuery();
+
+            // Process the result set
+            while (resultSet.next()) {
+                // Map the row to a Question object using the helper method
+                Question question = mapResultSetToQuestion(resultSet);
+
+                // Add the question to the list
+                topViewedQuestions.add(question);
+            }
+
+            // Close the result set
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return topViewedQuestions;
+    }
+
+    public List<Question> findByTopViewsAndTagsContains(String programmingLanguage, int limit) {
+        // Prepare the SQL query
+        String sqlQuery = """
+                SELECT q.question_id, q.is_answered, q.title, q.link, q.score, q.answer_count, q.accepted_answer_id, q.view_count,
+                       q.creation_date, q.closed_date, q.last_activity_date, q.last_edit_date,
+                       qt.tags
+                FROM question q
+                INNER JOIN (
+                    SELECT question_question_id, STRING_AGG(tags, ',') AS tags
+                    FROM question_tags
+                    GROUP BY question_question_id
+                ) qt ON q.question_id = qt.question_question_id
+                WHERE qt.tags LIKE ?
+                ORDER BY q.view_count DESC
+                LIMIT ?
+                """;
+
+        List<Question> topViewedQuestionsWithTags = new ArrayList<>();
+
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sqlQuery)
+        ) {
+            // Set the tag parameter with '%' to find any questions with the given programmingLanguage tag
+            statement.setString(1, programmingLanguage);
+            statement.setInt(2, limit);
+
+            // Execute the query
+            ResultSet resultSet = statement.executeQuery();
+
+            // Process the result set
+            while (resultSet.next()) {
+                // Map the row to a Question object using the helper method
+                Question question = mapResultSetToQuestion(resultSet);
+
+                // Add the question to the list
+                topViewedQuestionsWithTags.add(question);
+            }
+
+            // Close the result set
+            resultSet.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return topViewedQuestionsWithTags;
+    }
+
+    // Helper method to map a result set to a Question object
+    private Question mapResultSetToQuestion(ResultSet resultSet) throws SQLException {
+        // Extract values from the result set
+        long questionId = resultSet.getLong("question_id");
+        boolean isAnswered = resultSet.getBoolean("is_answered");
+        String title = resultSet.getString("title");
+        String link = resultSet.getString("link");
+        int score = resultSet.getInt("score");
+        int answerCount = resultSet.getInt("answer_count");
+        long acceptedAnswerId = resultSet.getLong("accepted_answer_id");
+        int viewCount = resultSet.getInt("view_count");
+        long creationDate = resultSet.getLong("creation_date");
+        long closedDate = resultSet.getLong("closed_date");
+        long lastActivityDate = resultSet.getLong("last_activity_date");
+        long lastEditDate = resultSet.getLong("last_edit_date");
+        String tags = resultSet.getString("tags");
+
+        // Build the question object using the builder pattern
+
+        return Question.builder()
+                .question_id(questionId)
+                .is_answered(isAnswered)
+                .title(title)
+                .link(link)
+                .score(score)
+                .answer_count(answerCount)
+                .accepted_answer_id(acceptedAnswerId)
+                .view_count(viewCount)
+                .creation_date(creationDate)
+                .closed_date(closedDate)
+                .last_activity_date(lastActivityDate)
+                .last_edit_date(lastEditDate)
+                .tags(Arrays.asList(tags.split(","))) // Convert the comma-separated tags string to a List
+                .build();
+    }
+
 }
 

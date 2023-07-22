@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nidhal.stackoverflowstatus.configuration.StackExchangeApiConfig;
 import nidhal.stackoverflowstatus.dao.QuestionDao;
+import nidhal.stackoverflowstatus.entity.Question;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -114,7 +115,7 @@ public class QuestionService {
     }
 
     @Cacheable(value = "totalNumberOfQuestionsPerProgrammingLanguageCache")
-    public LinkedHashMap<String,Integer> getTotalNumberOfQuestionsPerProgrammingLanguage() {
+    public LinkedHashMap<String, Integer> getTotalNumberOfQuestionsPerProgrammingLanguage() {
         LinkedHashMap<String, Integer> numberOfQuestionsPerProgrammingLanguage = new LinkedHashMap<>();
         for (String programmingLanguage : programmingLanguages) {
             numberOfQuestionsPerProgrammingLanguage.put(programmingLanguage, getNumberOfQuestionsForProgrammingLanguage(programmingLanguage));
@@ -208,5 +209,27 @@ public class QuestionService {
         openClosed.put("closed", numberOfQuestionsClosed);
 
         return openClosed;
+    }
+
+    // ------------------------ TOP VIEWS QUESTIONS ------------------------ //
+    @Cacheable(value = "topViewsQuestionsCache")
+    public List<Question> getTopViewsQuestions(int limit) {
+        return questionDao.findByTopViews(limit);
+    }
+
+    @Cacheable(value = "topViewsQuestionsCache", key = "#programmingLanguage")
+    public List<Question> getTopViewsQuestionsForProgrammingLanguage(String programmingLanguage, int limit) {
+        return questionDao.findByTopViewsAndTagsContains(programmingLanguage, limit);
+    }
+
+    // ------------------------ TOP SCORE QUESTIONS ------------------------ //
+    @Cacheable(value = "topScoreQuestionsCache")
+    public List<Question> getTopScoreQuestions(int limit) {
+        return questionDao.findByTopScore(limit);
+    }
+
+    @Cacheable(value = "topScoreQuestionsCache", key = "#programmingLanguage")
+    public List<Question> getTopScoreQuestionsForProgrammingLanguage(String programmingLanguage, int limit) {
+        return questionDao.findByTopScoreAndTagsContains(programmingLanguage, limit);
     }
 }

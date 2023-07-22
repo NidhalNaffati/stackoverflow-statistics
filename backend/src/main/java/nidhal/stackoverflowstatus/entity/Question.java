@@ -3,8 +3,10 @@ package nidhal.stackoverflowstatus.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
+@Builder
 @Entity
 @Table
 @Getter
@@ -12,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Question {
+public class Question implements Serializable {
     @Id
     private long question_id;
     public Boolean is_answered;

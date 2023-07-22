@@ -59,6 +59,10 @@ public class CacheUpdaterScheduler {
         updateCachedTotalOpenAndClosedQuestions();
         // update the total number of questions per programming language
         updateCachedTotalNumberOfQuestionsPerProgrammingLanguage();
+        // update the list of top score questions
+        updateCachedTopScoreQuestions();
+        // update the list of top views questions
+        updateCachedTopViewsQuestions();
 
         log.info("ALL CACHED DATA UPDATED.");
     }
@@ -74,6 +78,8 @@ public class CacheUpdaterScheduler {
         updateCachedClosedQuestions(programmingLanguage);
         updateCachedOpenQuestions(programmingLanguage);
         updateCachedOpenAndClosedQuestions(programmingLanguage);
+        updateCachedTopViewsQuestions(programmingLanguage);
+        updateCachedTopScoreQuestions(programmingLanguage);
     }
 
     // ------------------------ TOTAL NUMBER OF QUESTIONS ------------------------ //
@@ -172,6 +178,28 @@ public class CacheUpdaterScheduler {
     @CachePut(value = "numberOfOpenAndClosedQuestionsCache", key = "#programmingLanguage")
     public void updateCachedOpenAndClosedQuestions(String programmingLanguage) {
         questionService.getNumberOfOpenAndClosedQuestionsForProgrammingLanguage(programmingLanguage);
+    }
+
+    // ------------------------ TOP VIEWS QUESTIONS ------------------------ //
+    @CachePut(value = "topViewsQuestionsCache")
+    public void updateCachedTopViewsQuestions() {
+        questionService.getTopViewsQuestions(5);
+    }
+
+    @CachePut(value = "topViewsQuestionsCache", key = "#programmingLanguage")
+    public void updateCachedTopViewsQuestions(String programmingLanguage) {
+        questionService.getTopViewsQuestionsForProgrammingLanguage(programmingLanguage, 5);
+    }
+
+    // ------------------------ TOP SCORE QUESTIONS ------------------------ //
+    @CachePut(value = "topScoreQuestionsCache")
+    public void updateCachedTopScoreQuestions() {
+        questionService.getTopScoreQuestions(5);
+    }
+
+    @CachePut(value = "topScoreQuestionsCache", key = "#programmingLanguage")
+    public void updateCachedTopScoreQuestions(String programmingLanguage) {
+        questionService.getTopScoreQuestionsForProgrammingLanguage(programmingLanguage, 5);
     }
 
 }
