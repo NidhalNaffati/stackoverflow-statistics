@@ -7,6 +7,7 @@ import ClosedQuestionsCard from '@/components/small-cards/ClosedQuestionsCard.vu
 import PolarChart from '@/components/charts/PolarChart.vue'
 import DoughnutChartComponent from '@/components/charts/DoughnutChartComponent.vue'
 import TodayQuestionsCard from '@/components/small-cards/TodayQuestionsCard.vue'
+import TopViewComponent from '@/components/questions-cards/QuestionListComponent.vue'
 </script>
 
 <template>
@@ -31,9 +32,12 @@ import TodayQuestionsCard from '@/components/small-cards/TodayQuestionsCard.vue'
 
       <div class="row">
         <PolarChart />
+        <TopViewComponent title="Top viewed questions" link="top-views/5" />
       </div>
 
-      <!--div for the big cards -->
+      <div class="row">
+        <TopViewComponent title="Top scored questions" link="top-score/5" />
+      </div>
     </div>
   </main>
 </template>
