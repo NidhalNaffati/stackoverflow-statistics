@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {ref, onMounted} from 'vue'
+import { ref, onMounted } from 'vue'
 import axiosInstance from '@/api/axiosInstance'
-import programmingLanguageColors from "@/assets/js/programmingLanguageColors";
+import programmingLanguageColors from '@/assets/js/programmingLanguageColors'
 
 const chartData = ref(null)
 
