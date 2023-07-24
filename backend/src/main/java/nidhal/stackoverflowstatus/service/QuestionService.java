@@ -26,7 +26,7 @@ public class QuestionService {
     private List<String> programmingLanguages;
 
     @PostConstruct
-    private void init() {
+    public void init() {
         programmingLanguages = stackExchangeApiConfig.getProgrammingLanguages();
     }
 
