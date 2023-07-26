@@ -21,7 +21,7 @@ async function fetchData() {
     if (props.programmingLanguage === 'all') {
       const answeredQuestionsResponse = await axiosInstance.get('number-of-answered-questions')
       const totalQuestionsResponse = await axiosInstance.get('number-of-asked-questions')
-      if (answeredQuestionsResponse.status === 200) {
+      if (answeredQuestionsResponse.status === 200 && totalQuestionsResponse.status === 200) {
         answeredQuestions.value = await answeredQuestionsResponse.data
         totalQuestions.value = await totalQuestionsResponse.data
         percentageOfAnsweredQuestions.value = Math.round(
@@ -33,14 +33,21 @@ async function fetchData() {
       }
     } else {
       // otherwise, we want to get questions for a specific programming language
-      const response = await axiosInstance.get(
+      const answeredQuestionsResponse = await axiosInstance.get(
         'number-of-answered-questions/' + props.programmingLanguage
       )
-      if (response.status === 200) {
-        answeredQuestions.value = await response.data
+      const totalQuestionsResponse = await axiosInstance.get(
+        'number-of-asked-questions/' + props.programmingLanguage
+      )
+      if (answeredQuestionsResponse.status === 200 && totalQuestionsResponse.status === 200) {
+        answeredQuestions.value = await answeredQuestionsResponse.data
+        totalQuestions.value = await totalQuestionsResponse.data
+        percentageOfAnsweredQuestions.value = Math.round(
+          (answeredQuestions.value / totalQuestions.value) * 100
+        )
       } else {
-        console.error('Error status:', response.status)
-        console.error('Error:', response)
+        console.error('Error status:', answeredQuestionsResponse.status)
+        console.error('Error:', answeredQuestionsResponse)
       }
     }
   } catch (error) {
