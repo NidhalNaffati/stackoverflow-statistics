@@ -19,8 +19,12 @@ spring:
     database-platform: PostgreSQLDialect
 
   cache:
-    redis:
-      time-to-live: 10000 # 10 seconds
+    type: redis
+
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:8888}
+    time-to-live: 60 # the time to live in seconds
 
 stack-exchange:
   api-key: Ve4rjNkrFc*ZJqf25pA2ZA((
