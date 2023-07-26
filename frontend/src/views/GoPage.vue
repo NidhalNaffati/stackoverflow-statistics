@@ -15,10 +15,10 @@ import PieChartComponent from '@/components/charts/PieChartComponent.vue'
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
     <div class="container-fluid py-4">
       <div class="row">
-        <TodayQuestionsCard programming-language="java" />
-        <WeekQuestionsCard programmingLanguage="java" />
-        <AnsweredQuestionsCard programmingLanguage="java" />
-        <ClosedQuestionsCard programmingLanguage="java" />
+        <TodayQuestionsCard programming-language="go" />
+        <WeekQuestionsCard programmingLanguage="go" />
+        <AnsweredQuestionsCard programmingLanguage="go" />
+        <ClosedQuestionsCard programmingLanguage="go" />
       </div>
 
       <div class="row">
@@ -26,8 +26,8 @@ import PieChartComponent from '@/components/charts/PieChartComponent.vue'
       </div>
 
       <div class="row">
-        <QuestionsPerDay programming-language="java" />
-        <DoughnutChartComponent programming-language="java" />
+        <QuestionsPerDay programming-language="go" />
+        <DoughnutChartComponent programming-language="go" />
       </div>
 
       <div class="row">
@@ -35,7 +35,7 @@ import PieChartComponent from '@/components/charts/PieChartComponent.vue'
         <TopViewComponent
           title="Top viewed questions"
           link="top-views/5"
-          programming-language="java"
+          programming-language="go"
         />
       </div>
 
@@ -43,7 +43,7 @@ import PieChartComponent from '@/components/charts/PieChartComponent.vue'
         <TopViewComponent
           title="Top scored questions"
           link="top-score/5"
-          programming-language="java"
+          programming-language="go"
         />
         <PieChartComponent />
       </div>
