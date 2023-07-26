@@ -8,7 +8,7 @@ import PolarChart from '@/components/charts/PolarChart.vue'
 import DoughnutChartComponent from '@/components/charts/DoughnutChartComponent.vue'
 import TodayQuestionsCard from '@/components/small-cards/TodayQuestionsCard.vue'
 import TopViewComponent from '@/components/questions-cards/QuestionListComponent.vue'
-import PieChartComponent from "@/components/charts/PieChartComponent.vue";
+import PieChartComponent from '@/components/charts/PieChartComponent.vue'
 </script>
 
 <template>
@@ -33,11 +33,19 @@ import PieChartComponent from "@/components/charts/PieChartComponent.vue";
 
       <div class="row">
         <PolarChart />
-        <TopViewComponent title="Top viewed questions" link="top-views/5" />
+        <TopViewComponent
+          title="Top viewed questions"
+          link="top-views/5"
+          programming-language="all"
+        />
       </div>
 
       <div class="row">
-        <TopViewComponent title="Top scored questions" link="top-score/5" />
+        <TopViewComponent
+          title="Top scored questions"
+          link="top-score/5"
+          programming-language="all"
+        />
         <PieChartComponent />
       </div>
     </div>

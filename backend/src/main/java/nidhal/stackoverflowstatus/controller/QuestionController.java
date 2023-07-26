@@ -125,7 +125,7 @@ public class QuestionController {
         return questionService.getTopViewsQuestions(numberOfQuestions);
     }
 
-    @GetMapping("top-views/{programmingLanguage}/{numberOfQuestions}")
+    @GetMapping("top-views/{numberOfQuestions}/{programmingLanguage}")
     public List<Question> retrieveTopViewsQuestionsForProgrammingLanguage(@PathVariable String programmingLanguage, @PathVariable int numberOfQuestions) {
         return questionService.getTopViewsQuestionsForProgrammingLanguage(programmingLanguage, numberOfQuestions);
     }
@@ -136,7 +136,7 @@ public class QuestionController {
         return questionService.getTopScoreQuestions(numberOfQuestions);
     }
 
-    @GetMapping("top-score/{programmingLanguage}/{numberOfQuestions}")
+    @GetMapping("top-score/{numberOfQuestions}/{programmingLanguage}")
     public List<Question> retrieveTopScoreQuestionsForProgrammingLanguage(@PathVariable String programmingLanguage, @PathVariable int numberOfQuestions) {
         return questionService.getTopScoreQuestionsForProgrammingLanguage(programmingLanguage, numberOfQuestions);
     }

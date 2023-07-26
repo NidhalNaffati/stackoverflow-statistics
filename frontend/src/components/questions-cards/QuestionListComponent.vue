@@ -11,6 +11,11 @@ const props = defineProps({
   title: {
     type: String,
     required: true
+  },
+  programmingLanguage: {
+    type: String,
+    default: 'all',
+    required: false
   }
 })
 
@@ -18,8 +23,13 @@ const questions = ref([])
 
 onMounted(async () => {
   try {
-    const response = await axiosInstance.get(props.link)
-    questions.value = response.data
+    if (props.programmingLanguage === 'all') {
+      const response = await axiosInstance.get(props.link)
+      questions.value = response.data
+    } else {
+      const response = await axiosInstance.get(props.link + '/' + props.programmingLanguage)
+      questions.value = response.data
+    }
   } catch (error) {
     console.error('Failed to fetch data:', error)
   }
