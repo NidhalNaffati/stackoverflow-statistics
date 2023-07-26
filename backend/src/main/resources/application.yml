@@ -1,10 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/stackexchangedb
-    # this command allows you to see the size of the database
-    # SELECT pg_size_pretty(pg_database_size('stackexchangedb')) AS size;
-    username: postgres
-    password: mysecretpassword
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:postgres}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -22,8 +20,8 @@ spring:
     type: redis
 
   redis:
-    host: ${REDIS_HOST:localhost}
-    port: ${REDIS_PORT:8888}
+    host: ${REDIS_HOST:localhost} # if the host is not specified, it will be localhost
+    port: ${REDIS_PORT:6379} # if the port is not specified, it will be 6379
     time-to-live: 60 # the time to live in seconds
 
 stack-exchange:
