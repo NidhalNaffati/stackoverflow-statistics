@@ -619,5 +619,26 @@ public class QuestionDao {
                 .build();
     }
 
-}
+    public void deleteAllByCreationDateLessThan(long oneWeekAgoInSeconds) {
+        // Prepare the SQL query
+        String sqlQuery = """
+                DELETE FROM question
+                WHERE creation_date < ?
+                """;
 
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sqlQuery)
+        ) {
+
+            // Set the oneWeekAgoInSeconds parameter
+            statement.setLong(1, oneWeekAgoInSeconds);
+
+            // Execute the query
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}

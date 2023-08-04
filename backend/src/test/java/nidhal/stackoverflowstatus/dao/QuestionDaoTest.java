@@ -13,6 +13,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class QuestionDaoTest {
+class QuestionDaoTest {
 
     // Mock DataSource
     @Mock
@@ -85,7 +87,7 @@ public class QuestionDaoTest {
             .build();
 
     @Test
-    public void testCountAll() throws SQLException {
+    void testCountAll() throws SQLException {
         // Mocking resultSet.getInt() to return a value
         when(resultSet.next())
                 .thenReturn(true);
@@ -98,7 +100,7 @@ public class QuestionDaoTest {
     }
 
     @Test
-    public void testCountAllByTagsContains() throws SQLException {
+    void testCountAllByTagsContains() throws SQLException {
         // Mocking resultSet.getInt() to return a value
         when(resultSet.next())
                 .thenReturn(true);
@@ -110,7 +112,7 @@ public class QuestionDaoTest {
     }
 
     @Test
-    public void testCountByCreationDateBetween() throws SQLException {
+    void testCountByCreationDateBetween() throws SQLException {
         // Mocking resultSet.getInt() to return a value
         when(resultSet.next())
                 .thenReturn(true);
@@ -122,7 +124,7 @@ public class QuestionDaoTest {
     }
 
     @Test
-    public void testCountByCreationDateBetweenAndTagsContains() throws SQLException {
+    void testCountByCreationDateBetweenAndTagsContains() throws SQLException {
         // Mocking resultSet.getInt() to return a value
         when(resultSet.next())
                 .thenReturn(true);
@@ -135,7 +137,7 @@ public class QuestionDaoTest {
     }
 
     @Test
-    public void testFindCreationDatesByTagsContaining() throws SQLException {
+    void testFindCreationDatesByTagsContaining() throws SQLException {
         // Mocking resultSet.getLong() to return values
         when(resultSet.next())
                 .thenReturn(true, true, false);
@@ -152,7 +154,7 @@ public class QuestionDaoTest {
     }
 
     @Test
-    public void testCountByIsAnswered() throws SQLException {
+    void testCountByIsAnswered() throws SQLException {
         // Mocking resultSet.getInt() to return a value
         when(resultSet.next())
                 .thenReturn(true);
@@ -164,7 +166,7 @@ public class QuestionDaoTest {
     }
 
     @Test
-    public void testCountByIsAnsweredAndTagsContains() throws SQLException {
+    void testCountByIsAnsweredAndTagsContains() throws SQLException {
         // Mocking resultSet.getInt() to return a value
         when(resultSet.next())
                 .thenReturn(true);
@@ -176,7 +178,7 @@ public class QuestionDaoTest {
     }
 
     @Test
-    public void testCountByIsClosed() throws SQLException {
+    void testCountByIsClosed() throws SQLException {
         // Mocking resultSet.getInt() to return a value
         when(resultSet.next())
                 .thenReturn(true, false);
@@ -190,7 +192,7 @@ public class QuestionDaoTest {
     }
 
     @Test
-    public void testCountByIsClosedAndTagsContains() throws SQLException {
+    void testCountByIsClosedAndTagsContains() throws SQLException {
         // Mocking resultSet.getInt() to return a value
         when(resultSet.next())
                 .thenReturn(true, false);
@@ -251,7 +253,7 @@ public class QuestionDaoTest {
     }
 
     @Test
-    public void testFindByTopScore() throws SQLException {
+    void testFindByTopScore() throws SQLException {
         mockResultSetBehaviorForQuestions(question1, question2);
 
         List<Question> result = questionDao.findByTopScore(2);
@@ -262,7 +264,7 @@ public class QuestionDaoTest {
     }
 
     @Test
-    public void testFindByTopScoreAndTagsContains() throws SQLException {
+    void testFindByTopScoreAndTagsContains() throws SQLException {
         mockResultSetBehaviorForQuestions(question1, question2);
 
         List<Question> result = questionDao.findByTopScoreAndTagsContains("java", 2);
@@ -273,7 +275,7 @@ public class QuestionDaoTest {
     }
 
     @Test
-    public void testFindByTopViews() throws SQLException {
+    void testFindByTopViews() throws SQLException {
 
         mockResultSetBehaviorForQuestions(question1, question2);
 
@@ -286,7 +288,7 @@ public class QuestionDaoTest {
     }
 
     @Test
-    public void testFindByTopViewsAndTagsContains() throws SQLException {
+    void testFindByTopViewsAndTagsContains() throws SQLException {
 
         mockResultSetBehaviorForQuestions(question1, question2);
 
@@ -295,6 +297,17 @@ public class QuestionDaoTest {
         List<Question> expectedResult = Arrays.asList(question1, question2);
 
         assertEquals(expectedResult, result);
+
+    }
+
+    @Test
+    void testDeleteAllByCreationDateLessThan() throws SQLException {
+        long oneDayAgoInSeconds = Instant.now().minus(Duration.ofDays(1)).getEpochSecond();
+
+        questionDao.deleteAllByCreationDateLessThan(oneDayAgoInSeconds);
+
+        Mockito.verify(statement).setLong(1, oneDayAgoInSeconds);
+        Mockito.verify(statement).executeUpdate();
 
     }
 }

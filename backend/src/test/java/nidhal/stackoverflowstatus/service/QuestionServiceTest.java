@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class QuestionServiceTest {
+class QuestionServiceTest {
 
     @Mock
     private QuestionDao questionDao;
@@ -58,7 +58,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetTotalNumberOfQuestions() {
+    void testGetTotalNumberOfQuestions() {
         // Mock the behavior of questionDao.countAll()
         when(questionDao.countAll()).thenReturn(100);
 
@@ -70,7 +70,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetNumberOfQuestionsForProgrammingLanguage() {
+    void testGetNumberOfQuestionsForProgrammingLanguage() {
         String programmingLanguage = "Java";
         // Mock the behavior of questionDao.countAllByTagsContains(programmingLanguage)
         when(questionDao.countAllByTagsContains(programmingLanguage))
@@ -84,7 +84,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetTotalNumberOfQuestionsAskedToday() {
+    void testGetTotalNumberOfQuestionsAskedToday() {
         // Mock the behavior of questionDao.countByCreationDateBetween()
         when(questionDao.countByCreationDateBetween(anyLong(), anyLong()))
                 .thenReturn(30);
@@ -97,7 +97,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetNumberOfQuestionsAskedTodayPerProgrammingLanguage() {
+    void testGetNumberOfQuestionsAskedTodayPerProgrammingLanguage() {
         String programmingLanguage = "Python";
         // Mock the behavior of questionDao.countByCreationDateBetweenAndTagsContains()
         when(questionDao.countByCreationDateBetweenAndTagsContains(anyLong(), anyLong(), eq(programmingLanguage)))
@@ -111,7 +111,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetTotalNumberOfQuestionsPerDay() {
+    void testGetTotalNumberOfQuestionsPerDay() {
         // Mock the behavior of questionDao.findCreationDatesByTagsContaining()
         when(questionDao.findCreationDatesByTagsContaining(anyString()))
                 .thenReturn(Arrays.asList(
@@ -136,7 +136,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetNumberOfQuestionsPerDayForProgrammingLanguage() {
+    void testGetNumberOfQuestionsPerDayForProgrammingLanguage() {
         String programmingLanguage = "C++";
         // Mock the behavior of questionDao.findCreationDatesByTagsContaining(programmingLanguage)
         when(questionDao.findCreationDatesByTagsContaining(programmingLanguage))
@@ -162,7 +162,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetTotalNumberOfQuestionsPerProgrammingLanguage() {
+    void testGetTotalNumberOfQuestionsPerProgrammingLanguage() {
         // Mock the behavior of questionDao.countAllByTagsContains(programmingLanguage)
         when(questionDao.countAllByTagsContains(anyString()))
                 .thenReturn(100); // Assume 100 questions for each programming language
@@ -179,7 +179,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetTotalNumberOfAnsweredQuestions() {
+    void testGetTotalNumberOfAnsweredQuestions() {
         // Mock the behavior of questionDao.countByIsAnswered
         when(questionDao.countByIsAnswered(true)).thenReturn(42);
 
@@ -193,7 +193,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetNumberOfAnsweredQuestionsForProgrammingLanguage() {
+    void testGetNumberOfAnsweredQuestionsForProgrammingLanguage() {
         // Mock the behavior of questionDao.countByIsAnsweredAndTagsContains
         when(questionDao.countByIsAnsweredAndTagsContains(true, "Java")).thenReturn(10);
 
@@ -208,7 +208,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetTotalNumberOfUnansweredQuestions() {
+    void testGetTotalNumberOfUnansweredQuestions() {
         // Mock the behavior of questionDao.countByIsAnswered
         when(questionDao.countByIsAnswered(false)).thenReturn(25);
 
@@ -223,7 +223,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetNumberOfUnansweredQuestionsForProgrammingLanguage() {
+    void testGetNumberOfUnansweredQuestionsForProgrammingLanguage() {
         // Mock the behavior of questionDao.countByIsAnsweredAndTagsContains
         when(questionDao.countByIsAnsweredAndTagsContains(false, "Java")).thenReturn(5);
 
@@ -238,7 +238,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetTotalNumberOfQuestionsAnsweredAndUnanswered() {
+    void testGetTotalNumberOfQuestionsAnsweredAndUnanswered() {
         // Mock the behavior of questionDao.countByIsAnswered
         when(questionDao.countByIsAnswered(true)).thenReturn(42);
         when(questionDao.countByIsAnswered(false)).thenReturn(25);
@@ -255,7 +255,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetNumberOfAnsweredAndUnansweredQuestionsForProgrammingLanguage() {
+    void testGetNumberOfAnsweredAndUnansweredQuestionsForProgrammingLanguage() {
         // Mock the behavior of questionDao.countByIsAnsweredAndTagsContains
         when(questionDao.countByIsAnsweredAndTagsContains(true, "Java"))
                 .thenReturn(10);
@@ -274,7 +274,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetTotalNumberOfClosedQuestions() {
+    void testGetTotalNumberOfClosedQuestions() {
         // Mock the behavior of questionDao.countByIsClosed
         when(questionDao.countByIsClosed(true))
                 .thenReturn(15);
@@ -289,7 +289,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetNumberOfClosedQuestionsForProgrammingLanguage() {
+    void testGetNumberOfClosedQuestionsForProgrammingLanguage() {
         // Mock the behavior of questionDao.countByIsClosedAndTagsContains
         when(questionDao.countByIsClosedAndTagsContains(true, "Java"))
                 .thenReturn(5);
@@ -305,7 +305,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetTotalNumberOfOpenQuestions() {
+    void testGetTotalNumberOfOpenQuestions() {
         // Mock the behavior of questionDao.countByIsClosed
         when(questionDao.countByIsClosed(false))
                 .thenReturn(20);
@@ -321,7 +321,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetNumberOfOpenQuestionsForProgrammingLanguage() {
+    void testGetNumberOfOpenQuestionsForProgrammingLanguage() {
         // Mock the behavior of questionDao.countByIsClosedAndTagsContains
         when(questionDao.countByIsClosedAndTagsContains(false, "Java"))
                 .thenReturn(8);
@@ -337,7 +337,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetNumberOfOpenAndClosedQuestions() {
+    void testGetNumberOfOpenAndClosedQuestions() {
         // Mock the behavior of getTotalNumberOfOpenQuestions and getTotalNumberOfClosedQuestions
         when(questionDao.countByIsClosed(false))
                 .thenReturn(20);
@@ -358,7 +358,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetNumberOfOpenAndClosedQuestionsForProgrammingLanguage() {
+    void testGetNumberOfOpenAndClosedQuestionsForProgrammingLanguage() {
         // Mock the behavior of getNumberOfOpenQuestionsForProgrammingLanguage and getNumberOfClosedQuestionsForProgrammingLanguage
         when(questionDao.countByIsClosedAndTagsContains(false, "Java"))
                 .thenReturn(8);
@@ -379,7 +379,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void testGetTopViewsQuestions() {
+    void testGetTopViewsQuestions() {
         // Create sample questions for testing
         int limit = 5;
         List<Question> sampleQuestions = createSampleQuestions(limit);
@@ -400,7 +400,7 @@ public class QuestionServiceTest {
 
     // Test for getTopViewsQuestionsForProgrammingLanguage method
     @Test
-    public void testGetTopViewsQuestionsForProgrammingLanguage() {
+    void testGetTopViewsQuestionsForProgrammingLanguage() {
         // Create sample questions for testing
         int limit = 5;
         String programmingLanguage = "Java";
@@ -422,7 +422,7 @@ public class QuestionServiceTest {
 
     // Test for getTopScoreQuestions method
     @Test
-    public void testGetTopScoreQuestions() {
+    void testGetTopScoreQuestions() {
         // Create sample questions for testing
         int limit = 5;
         List<Question> sampleQuestions = createSampleQuestions(limit);
@@ -443,7 +443,7 @@ public class QuestionServiceTest {
 
     // Test for getTopScoreQuestionsForProgrammingLanguage method
     @Test
-    public void testGetTopScoreQuestionsForProgrammingLanguage() {
+    void testGetTopScoreQuestionsForProgrammingLanguage() {
         // Create sample questions for testing
         int limit = 5;
         String programmingLanguage = "Java";

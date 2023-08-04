@@ -3,6 +3,7 @@ package nidhal.stackoverflowstatus.controller;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import nidhal.stackoverflowstatus.configuration.StackExchangeApiConfig;
+import nidhal.stackoverflowstatus.dao.QuestionDao;
 import nidhal.stackoverflowstatus.service.StackExchangeApiService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,8 @@ public class StackExchangeApiController {
 
     private final StackExchangeApiService stackExchangeApiService;
     private final StackExchangeApiConfig stackExchangeApiConfig;
+    private final QuestionDao questionDao;
+
     private List<String> programmingLanguages;
 
     @PostConstruct
@@ -37,6 +40,9 @@ public class StackExchangeApiController {
         int maxThreads = 3;
         ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
 
+        // Since our application store only the questions from the last week, we need to delete the old ones
+        questionDao.deleteAllByCreationDateLessThan(oneWeekAgoInSeconds);
+
         for (String language : programmingLanguages) {
             CompletableFuture.runAsync(() -> stackExchangeApiService.storeAllQuestionRelatedTo(language, oneWeekAgoInSeconds), executorService);
         }
@@ -51,10 +57,15 @@ public class StackExchangeApiController {
     public String storeThisDayQuestions() {
 
         long oneDayAgoInSeconds = Instant.now().minus(Duration.ofDays(1)).getEpochSecond();
+        long oneWeekAgoInSeconds = Instant.now().minus(Duration.ofDays(7)).getEpochSecond();
 
         int maxThreads = 3;
         ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
 
+        // Since our application store only the questions from the last week, we need to delete the old ones
+        questionDao.deleteAllByCreationDateLessThan(oneWeekAgoInSeconds);
+
+        // store all questions related to each programming language in a separate thread
         for (String language : programmingLanguages) {
             CompletableFuture.runAsync(() -> stackExchangeApiService.storeAllQuestionRelatedTo(language, oneDayAgoInSeconds), executorService);
         }
