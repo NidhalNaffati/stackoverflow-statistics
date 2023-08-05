@@ -27,9 +27,6 @@ const fetchData = async () => {
         percentageOfClosedQuestions.value = Math.round(
           (closedQuestions.value / totalQuestions.value) * 100
         )
-        console.log('closedQuestions.value:', closedQuestions.value)
-        console.log('totalQuestions.value:', totalQuestions.value)
-        console.log('percentageOfClosedQuestions.value:', percentageOfClosedQuestions.value)
       } else {
         console.error('Error status:', closedQuestionResponse.status)
         console.error('Error:', closedQuestionResponse)
