@@ -2,6 +2,7 @@ package nidhal.stackoverflowstatus.controller;
 
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import nidhal.stackoverflowstatus.configuration.CacheConfig;
 import nidhal.stackoverflowstatus.configuration.StackExchangeApiConfig;
 import nidhal.stackoverflowstatus.dao.QuestionDao;
 import nidhal.stackoverflowstatus.service.StackExchangeApiService;
@@ -24,6 +25,7 @@ public class StackExchangeApiController {
     private final StackExchangeApiService stackExchangeApiService;
     private final StackExchangeApiConfig stackExchangeApiConfig;
     private final QuestionDao questionDao;
+    private final CacheConfig cacheConfig;
 
     private List<String> programmingLanguages;
 
@@ -42,6 +44,9 @@ public class StackExchangeApiController {
 
         // Since our application store only the questions from the last week, we need to delete the old ones
         questionDao.deleteAllByCreationDateLessThan(oneWeekAgoInSeconds);
+
+        // clear the cache before updating the questions
+        cacheConfig.clearCache();
 
         for (String language : programmingLanguages) {
             CompletableFuture.runAsync(() -> stackExchangeApiService.storeAllQuestionRelatedTo(language, oneWeekAgoInSeconds), executorService);
@@ -64,6 +69,9 @@ public class StackExchangeApiController {
 
         // Since our application store only the questions from the last week, we need to delete the old ones
         questionDao.deleteAllByCreationDateLessThan(oneWeekAgoInSeconds);
+
+        // clear the cache before updating the questions
+        cacheConfig.clearCache();
 
         // store all questions related to each programming language in a separate thread
         for (String language : programmingLanguages) {
