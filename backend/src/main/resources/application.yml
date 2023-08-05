@@ -38,3 +38,6 @@ stack-exchange:
     - ruby
     - c++
     - c#
+
+frontend:
+  url: http://localhost:5173
