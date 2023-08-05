@@ -58,7 +58,7 @@ function createChart() {
       labels: labels,
       datasets: [
         {
-          label: 'Earnings',
+          label: 'Questions',
           fill: true,
           data: data,
           backgroundColor: 'rgb(54,185,204)',
