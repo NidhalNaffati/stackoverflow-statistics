@@ -32,8 +32,12 @@ We are also providing scheduled tasks to update the questions since the question
 more votes, etc. <br/>
 We are also providing scheduled tasks to store more questions. <br/>
 
-Here is a video series that shows up the project:
-https://github.com/NidhalNaffati/stackoverflow-statistics/assets/100954462/4477608f-1730-4568-9004-f2603734d2f8
+Here is a video that shows the project:
+
+
+https://github.com/NidhalNaffati/stackoverflow-statistics/assets/100954462/7209dd30-9ee2-49b2-b2c6-f15c3b3818ec
+
+
 
 ## _Technologies Used_
 
