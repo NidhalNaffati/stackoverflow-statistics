@@ -22,13 +22,13 @@ import java.time.Duration;
 @EnableCaching
 public class CacheConfig {
 
-    @Value("${spring.redis.host}")
+    @Value("${spring.data.redis.host}")
     private String REDIS_HOSTNAME;
 
-    @Value("${spring.redis.port}")
+    @Value("${spring.data.redis.port}")
     private int REDIS_PORT;
 
-    @Value("${spring.redis.time-to-live}")
+    @Value("${spring.data.redis.timeout}")
     private int REDIS_TIME_TO_LIVE;
 
     // Redis connection factory

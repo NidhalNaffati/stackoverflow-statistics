@@ -19,10 +19,11 @@ spring:
   cache:
     type: redis
 
-  redis:
-    host: ${REDIS_HOST:localhost} # if the host is not specified, it will be localhost
-    port: ${REDIS_PORT:6379} # if the port is not specified, it will be 6379
-    time-to-live: 60 # the time to live in seconds
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 60 # the timeout in seconds
 
 stack-exchange:
   api-key: Ve4rjNkrFc*ZJqf25pA2ZA((
