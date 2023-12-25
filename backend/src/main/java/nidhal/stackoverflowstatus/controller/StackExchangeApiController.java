@@ -34,25 +34,25 @@ public class StackExchangeApiController {
         programmingLanguages = stackExchangeApiConfig.getProgrammingLanguages();
     }
 
+    private static final long ONE_DAY_AGO_IN_SECONDS = Instant.now().minus(Duration.ofDays(1)).getEpochSecond();
+    private static final long ONE_WEEK_AGO_IN_SECONDS = Instant.now().minus(Duration.ofDays(7)).getEpochSecond();
+    private static final int MAX_THREADS = 10;
+
     @GetMapping("/this-week")
     public String storeThisWeekQuestions() {
 
-        long oneWeekAgoInSeconds = Instant.now().minus(Duration.ofDays(7)).getEpochSecond();
-
-        int maxThreads = 3;
-        ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
-
         // Since our application store only the questions from the last week, we need to delete the old ones
-        questionDao.deleteAllByCreationDateLessThan(oneWeekAgoInSeconds);
+        questionDao.deleteAllByCreationDateLessThan(ONE_WEEK_AGO_IN_SECONDS);
 
         // clear the cache before updating the questions
         cacheConfig.clearCache();
 
-        for (String language : programmingLanguages) {
-            CompletableFuture.runAsync(() -> stackExchangeApiService.storeAllQuestionRelatedTo(language, oneWeekAgoInSeconds), executorService);
+        try (ExecutorService executorService = Executors.newFixedThreadPool(MAX_THREADS)) {
+            // store all questions related to each programming language in a separate thread
+            for (String language : programmingLanguages) {
+                CompletableFuture.runAsync(() -> stackExchangeApiService.storeAllQuestionRelatedTo(language, ONE_WEEK_AGO_IN_SECONDS), executorService);
+            }
         }
-
-        executorService.shutdown();
 
         return "This week's questions up to date";
     }
@@ -61,25 +61,19 @@ public class StackExchangeApiController {
     @GetMapping("/this-day")
     public String storeThisDayQuestions() {
 
-        long oneDayAgoInSeconds = Instant.now().minus(Duration.ofDays(1)).getEpochSecond();
-        long oneWeekAgoInSeconds = Instant.now().minus(Duration.ofDays(7)).getEpochSecond();
-
-        int maxThreads = 3;
-        ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
-
         // Since our application store only the questions from the last week, we need to delete the old ones
-        questionDao.deleteAllByCreationDateLessThan(oneWeekAgoInSeconds);
+        questionDao.deleteAllByCreationDateLessThan(ONE_WEEK_AGO_IN_SECONDS);
 
         // clear the cache before updating the questions
         cacheConfig.clearCache();
 
-        // store all questions related to each programming language in a separate thread
-        for (String language : programmingLanguages) {
-            CompletableFuture.runAsync(() -> stackExchangeApiService.storeAllQuestionRelatedTo(language, oneDayAgoInSeconds), executorService);
+        try (ExecutorService executorService = Executors.newFixedThreadPool(MAX_THREADS)) {
+            // store all questions related to each programming language in a separate thread
+            for (String language : programmingLanguages) {
+                CompletableFuture.runAsync(() -> stackExchangeApiService.storeAllQuestionRelatedTo(language, ONE_DAY_AGO_IN_SECONDS), executorService);
+            }
         }
-
-        executorService.shutdown();
-
+        
         return "Today's questions up to date";
     }
 }
