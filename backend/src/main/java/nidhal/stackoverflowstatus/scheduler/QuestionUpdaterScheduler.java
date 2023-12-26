@@ -20,7 +20,7 @@ import java.util.List;
 public class QuestionUpdaterScheduler {
 
     private final CacheConfig cacheConfig;
-    StackExchangeApiService stackExchangeApiService;
+    private final StackExchangeApiService stackExchangeApiService;
     private final StackExchangeApiConfig stackExchangeApiConfig;
     private List<String> programmingLanguages;
 
@@ -29,10 +29,10 @@ public class QuestionUpdaterScheduler {
         programmingLanguages = stackExchangeApiConfig.getProgrammingLanguages();
     }
 
-    private final int fixedDelayForTodayQuestions = 655 * 1000; // ≈ 11 minutes
-    private final int fixedDelayForWeekQuestions = 2 * 60 * 60 * 1000; // 2 hours
+    private static final int FIXED_DELAY_FOR_TODAY_QUESTIONS = 655 * 1000; // ≈ 11 minutes
+    private static final int FIXED_DELAY_FOR_WEEK_QUESTIONS = 2 * 60 * 60 * 1000; // 2 hours
 
-    @Scheduled(fixedDelay = fixedDelayForTodayQuestions, initialDelay = fixedDelayForTodayQuestions)
+    @Scheduled(fixedDelay = FIXED_DELAY_FOR_TODAY_QUESTIONS, initialDelay = FIXED_DELAY_FOR_TODAY_QUESTIONS)
     public void updateTodayQuestions() {
         // clear the cache before updating the questions
         cacheConfig.clearCache();
@@ -43,7 +43,7 @@ public class QuestionUpdaterScheduler {
             stackExchangeApiService.storeAllQuestionRelatedTo(language, onDayAgoInSeconds);
     }
 
-    @Scheduled(fixedDelay = fixedDelayForWeekQuestions, initialDelay = fixedDelayForWeekQuestions)
+    @Scheduled(fixedDelay = FIXED_DELAY_FOR_WEEK_QUESTIONS, initialDelay = FIXED_DELAY_FOR_WEEK_QUESTIONS)
     public void updateWeekQuestions() {
         // clear the cache before updating the questions
         cacheConfig.clearCache();
