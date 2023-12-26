@@ -1,3 +1,4 @@
+## This file is used by the docker compose support dependency to start the required services for the project.
 services:
   # PostgreSQL Database
   postgres_db:
