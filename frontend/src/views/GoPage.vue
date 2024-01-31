@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="js">
 import QuestionsPerDay from '@/components/charts/QuestionsPerDayBarChart.vue'
 import LinearChartComponent from '@/components/charts/LineChartComponent.vue'
 import WeekQuestionsCard from '@/components/small-cards/WeekQuestionsCard.vue'
