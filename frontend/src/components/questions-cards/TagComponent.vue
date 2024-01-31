@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="js">
 const props = defineProps({
   tag: {
     type: String,

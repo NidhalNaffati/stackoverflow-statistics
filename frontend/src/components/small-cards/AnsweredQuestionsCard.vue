@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="js">
 import { onMounted, ref } from 'vue'
 import axiosInstance from '@/api/axiosInstance'
 
