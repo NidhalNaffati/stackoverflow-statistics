@@ -7,6 +7,4 @@ const axiosInstance = axios.create({
   baseURL: springBootAPI
 })
 
-console.log('SPRING BOOT API URL: ', springBootAPI)
-
 export default axiosInstance
