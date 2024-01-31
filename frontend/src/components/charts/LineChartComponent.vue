@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import axiosInstance from '@/api/axiosInstance'
 import programmingLanguageColors from '@/assets/js/programmingLanguageColors'
+import Chart from 'chart.js/auto';
 
 const javaData = ref(null)
 const pythonData = ref(null)
@@ -132,41 +133,37 @@ function createChart() {
         fontStyle: 'normal'
       },
       scales: {
-        xAxes: [
-          {
-            gridLines: {
-              color: 'rgb(234, 236, 244)',
-              zeroLineColor: 'rgb(234, 236, 244)',
-              drawBorder: false,
-              drawTicks: false,
-              borderDash: ['2'],
-              zeroLineBorderDash: ['2'],
-              drawOnChartArea: false
-            },
-            ticks: {
-              fontColor: '#858796',
-              fontStyle: 'normal',
-              padding: 20
-            }
+        x: {
+          grid: {
+            color: 'rgb(234, 236, 244)',
+            zeroLineColor: 'rgb(234, 236, 244)',
+            drawBorder: false,
+            drawTicks: false,
+            borderDash: ['2'],
+            zeroLineBorderDash: ['2'],
+            drawOnChartArea: false
+          },
+          ticks: {
+            fontColor: '#858796',
+            fontStyle: 'normal',
+            padding: 20
           }
-        ],
-        yAxes: [
-          {
-            gridLines: {
-              color: 'rgb(234, 236, 244)',
-              zeroLineColor: 'rgb(234, 236, 244)',
-              drawBorder: false,
-              drawTicks: false,
-              borderDash: ['2'],
-              zeroLineBorderDash: ['2']
-            },
-            ticks: {
-              fontColor: '#858796',
-              fontStyle: 'normal',
-              padding: 20
-            }
+        },
+        y: {
+          grid: {
+            color: 'rgb(234, 236, 244)',
+            zeroLineColor: 'rgb(234, 236, 244)',
+            drawBorder: false,
+            drawTicks: false,
+            borderDash: ['2'],
+            zeroLineBorderDash: ['2']
+          },
+          ticks: {
+            fontColor: '#858796',
+            fontStyle: 'normal',
+            padding: 20
           }
-        ]
+        }
       }
     }
   })
