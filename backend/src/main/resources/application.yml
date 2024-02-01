@@ -41,4 +41,4 @@ stack-exchange:
     - c#
 
 frontend:
-  url: http://localhost:5173
+  url: ${FRONTEND_URL:http://localhost:5173}
