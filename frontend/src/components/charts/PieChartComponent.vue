@@ -13,10 +13,11 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="js">
 import { ref, onMounted } from 'vue'
 import axiosInstance from '@/api/axiosInstance'
 import programmingLanguageColors from '@/assets/js/programmingLanguageColors'
+import Chart from 'chart.js/auto';
 
 const chartData = ref(null)
 

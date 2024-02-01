@@ -1,6 +1,7 @@
-<script setup lang="ts">
+<script setup lang="js">
 import { onMounted, ref } from 'vue'
 import axiosInstance from '@/api/axiosInstance'
+import Chart from 'chart.js/auto';
 
 const props = defineProps({
   programmingLanguage: {

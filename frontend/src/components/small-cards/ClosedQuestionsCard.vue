@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="js">
 import { onMounted, ref } from 'vue'
 import axiosInstance from '@/api/axiosInstance'
 
@@ -31,7 +31,6 @@ const fetchData = async () => {
         console.error('Error status:', closedQuestionResponse.status)
         console.error('Error:', closedQuestionResponse)
       }
-      return
     } else {
       // otherwise, we want to get questions for a specific programming language
       const closedQuestionResponse = await axiosInstance.get(
