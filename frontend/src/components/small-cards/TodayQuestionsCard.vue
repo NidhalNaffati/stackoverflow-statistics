@@ -12,32 +12,27 @@ const props = defineProps({
 
 const serverData = ref(null)
 
-// Make a request to the server to retrieve data
-const fetchData = async () => {
+const hasError = ref(false) // flag to track if there is an error
+const errorMessage = ref('')
+
+async function fetchData() {
   try {
-    // if the programmingLanguage is 'all', then we want to get all questions
-    if (props.programmingLanguage === 'all') {
-      const response = await axiosInstance.get('number-of-questions-asked-today')
-      if (response.status === 200) {
-        serverData.value = await response.data
-      } else {
-        console.error('Error status:', response.status)
-        console.error('Error:', response)
-      }
+    const endpoint = props.programmingLanguage === 'all'
+      ? 'number-of-questions-asked-today'
+      : `number-of-questions-asked-today/${props.programmingLanguage}`
+
+    const response = await axiosInstance.get(endpoint)
+
+    if (response.status === 200) {
+      serverData.value = await response.data
     } else {
-      // otherwise, we want to get questions for a specific programming language
-      const response = await axiosInstance.get(
-        'number-of-questions-asked-today/' + props.programmingLanguage
-      )
-      if (response.status === 200) {
-        serverData.value = await response.data
-      } else {
-        console.error('Error status:', response.status)
-        console.error('Error:', response)
-      }
+      hasError.value = true
+      errorMessage.value = response.data.message
     }
   } catch (error) {
     console.error('Error:', error)
+    hasError.value = true
+    errorMessage.value = error.message
   }
 }
 
@@ -55,7 +50,10 @@ onMounted(() => {
             <div class="text-uppercase text-success fw-bold text">
               <span>Today's Questions</span>
             </div>
-            <div class="text-dark fw-bold h5 mb-0">
+            <p v-if="hasError" class="alert alert-danger" role="alert">
+              {{ errorMessage }}
+            </p>
+            <div v-else class="text-dark fw-bold h5 mb-0">
               <span>{{ serverData }}</span>
             </div>
           </div>

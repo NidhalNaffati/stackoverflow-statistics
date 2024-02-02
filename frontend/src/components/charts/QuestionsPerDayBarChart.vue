@@ -10,7 +10,11 @@ const props = defineProps({
     required: false
   }
 })
+
 const chartData = ref(null)
+
+const hasError = ref(false) // Added a flag to track if there is an error
+const errorMessage = ref('')
 
 onMounted(() => {
   fetchData()
@@ -18,31 +22,23 @@ onMounted(() => {
 
 const fetchData = async () => {
   try {
-    // if the programmingLanguage is 'all', then we want to get all questions
-    if (props.programmingLanguage === 'all') {
-      const response = await axiosInstance.get('number-of-questions-per-day')
-      if (response.status === 200) {
-        chartData.value = await response.data
-        createChart()
-      } else {
-        console.error('Error status:', response.status)
-        console.error('Error:', response)
-      }
+    const endpoint = props.programmingLanguage === 'all'
+      ? 'number-of-questions-per-day'
+      : `number-of-questions-per-day/${props.programmingLanguage}`
+
+    const response = await axiosInstance.get(endpoint)
+
+    if (response.status === 200) {
+      chartData.value = await response.data
+      createChart()
     } else {
-      // otherwise, we want to get questions for a specific programming language
-      const response = await axiosInstance.get(
-        'number-of-questions-per-day/' + props.programmingLanguage
-      )
-      if (response.status === 200) {
-        chartData.value = await response.data
-        createChart()
-      } else {
-        console.error('Error status:', response.status)
-        console.error('Error:', response)
-      }
+      hasError.value = true
+      errorMessage.value = response.data.message
     }
   } catch (error) {
     console.error('Error:', error)
+    hasError.value = true
+    errorMessage.value = error.message
   }
 }
 
@@ -124,7 +120,10 @@ function createChart() {
       </div>
       <div class="card-body">
         <div class="chart-area">
-          <canvas id="chart-bar" class="chart-canvas"></canvas>
+          <p v-if="hasError" class="alert alert-danger" role="alert">
+            {{ errorMessage }}
+          </p>
+          <canvas v-else id="chart-bar" class="chart-canvas"></canvas>
         </div>
       </div>
     </div>

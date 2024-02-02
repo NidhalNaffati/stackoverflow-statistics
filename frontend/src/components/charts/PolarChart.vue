@@ -2,9 +2,12 @@
 import { ref, onMounted } from 'vue'
 import axiosInstance from '@/api/axiosInstance'
 import programmingLanguageColors from '@/assets/js/programmingLanguageColors'
-import Chart from 'chart.js/auto';
+import Chart from 'chart.js/auto'
 
 const chartData = ref(null)
+
+const hasError = ref(false) // flag to track if there is an error
+const errorMessage = ref('')
 
 onMounted(() => {
   fetchData()
@@ -17,11 +20,13 @@ const fetchData = async () => {
       chartData.value = await response.data
       createChart()
     } else {
-      console.error('Error status:', response.status)
-      console.error('Error:', response)
+      hasError.value = true
+      errorMessage.value = response.data.message
     }
   } catch (error) {
     console.error('Error:', error)
+    hasError.value = true
+    errorMessage.value = error.message
   }
 }
 
@@ -84,7 +89,10 @@ function createChart() {
       </div>
       <div class="card-body">
         <div class="chart-area polar-chart">
-          <canvas id="chart-polar" class="chart-canvas"></canvas>
+          <p v-if="hasError" class="alert alert-danger" role="alert">
+            {{ errorMessage }}
+          </p>
+          <canvas v-else id="chart-polar" class="chart-canvas"></canvas>
         </div>
       </div>
     </div>

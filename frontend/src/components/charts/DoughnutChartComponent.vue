@@ -1,7 +1,7 @@
 <script setup lang="js">
 import { onMounted, ref } from 'vue'
 import axiosInstance from '@/api/axiosInstance'
-import Chart from 'chart.js/auto';
+import Chart from 'chart.js/auto'
 
 const props = defineProps({
   programmingLanguage: {
@@ -13,34 +13,32 @@ const props = defineProps({
 
 const serverData = ref(null)
 
+const hasError = ref(false) // flag to track if there is an error
+const errorMessage = ref('')
+
+onMounted(() => {
+  fetchData()
+})
+
 async function fetchData() {
   try {
-    // if the programmingLanguage is 'all', then we want to get all questions
-    if (props.programmingLanguage === 'all') {
-      const response = await axiosInstance.get('number-of-answered-and-unanswered-questions')
-      if (response.status === 200) {
-        serverData.value = await response.data
-        // serverData.value : { "answered": 2384,"unanswered": 7132}
-        createChart()
-      } else {
-        console.error('Error status:', response.status)
-        console.error('Error:', response)
-      }
+    const endpoint = props.programmingLanguage === 'all'
+      ? 'number-of-answered-and-unanswered-questions'
+      : `number-of-answered-and-unanswered-questions/${props.programmingLanguage}`
+
+    const response = await axiosInstance.get(endpoint)
+
+    if (response.status === 200) {
+      serverData.value = await response.data
+      createChart()
     } else {
-      // otherwise, we want to get questions for a specific programming language
-      const response = await axiosInstance.get(
-        'number-of-answered-and-unanswered-questions/' + props.programmingLanguage
-      )
-      if (response.status === 200) {
-        serverData.value = await response.data
-        createChart()
-      } else {
-        console.error('Error status:', response.status)
-        console.error('Error:', response)
-      }
+      hasError.value = true
+      errorMessage.value = response.data.message
     }
   } catch (error) {
-    console.error('Error:', error)
+    console.error('Error:', error.message)
+    hasError.value = true
+    errorMessage.value = error.message
   }
 }
 
@@ -78,8 +76,6 @@ function createChart() {
     }
   })
 }
-
-onMounted(fetchData)
 </script>
 
 <template>
@@ -90,7 +86,10 @@ onMounted(fetchData)
       </div>
       <div class="card-body">
         <div class="chart-area">
-          <canvas id="chart-doughnut" class="chart-canvas"></canvas>
+          <p v-if="hasError" class="alert alert-danger" role="alert">
+            {{ errorMessage }}
+          </p>
+          <canvas v-else id="chart-doughnut" class="chart-canvas"></canvas>
         </div>
         <div class="text-center small mt-4">
           <span class="me-2"> <i class="fas fa-circle text-primary"></i>Answered </span>

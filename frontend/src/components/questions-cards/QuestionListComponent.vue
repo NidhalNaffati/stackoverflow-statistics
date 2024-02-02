@@ -19,21 +19,27 @@ const props = defineProps({
   }
 })
 
+const hasError = ref(false) // flag to track if there is an error
+const errorMessage = ref('')
+
 const questions = ref([])
 
-onMounted(async () => {
-  try {
-    if (props.programmingLanguage === 'all') {
-      const response = await axiosInstance.get(props.link)
-      questions.value = response.data
-    } else {
-      const response = await axiosInstance.get(props.link + '/' + props.programmingLanguage)
-      questions.value = response.data
-    }
-  } catch (error) {
-    console.error('Failed to fetch data:', error)
-  }
+onMounted(() => {
+  fetchData()
 })
+
+async function fetchData() {
+  try {
+    const response = await axiosInstance.get(
+      props.programmingLanguage === 'all' ? props.link : `${props.link}/${props.programmingLanguage}`
+    );
+    questions.value = response.data;
+  } catch (error) {
+    console.error('Failed to fetch data:', error);
+    hasError.value = true;
+    errorMessage.value = error.message;
+  }
+}
 </script>
 
 <template>
@@ -43,7 +49,10 @@ onMounted(async () => {
         <h6 class="text-primary fw-bold m-0">{{ props.title }}</h6>
       </div>
       <div class="card-body">
-        <ul class="list-group list-group-flush">
+        <div v-if="hasError" class="alert alert-danger" role="alert">
+          {{ errorMessage }}
+        </div>
+        <ul v-else class="list-group list-group-flush">
           <li v-for="question in questions" :key="question.question_id" class="list-group-item">
             <div class="row align-items-center no-gutters">
               <div class="col-xxl-2 me-2">
@@ -60,9 +69,7 @@ onMounted(async () => {
               <div class="col me-2">
                 <h5 class="mb-0">
                   <strong>
-                    <a :href="question.link" target="_blank" class="link-no-underline">{{
-                      question.title
-                    }}</a>
+                    <a :href="question.link" target="_blank" class="link-no-underline">{{question.title}}</a>
                   </strong>
                 </h5>
                 <div class="d-flex flex-wrap">

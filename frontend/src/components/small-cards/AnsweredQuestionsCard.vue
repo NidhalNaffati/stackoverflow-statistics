@@ -10,48 +10,40 @@ const props = defineProps({
   }
 })
 
+const hasError = ref(false) // flag to track if there is an error
+const errorMessage = ref('')
+
 const answeredQuestions = ref(null)
 const totalQuestions = ref(null)
 const percentageOfAnsweredQuestions = ref(null)
 
-// Make a request to the server to retrieve data
 async function fetchData() {
   try {
-    // if the programmingLanguage is 'all', then we want to get all questions
-    if (props.programmingLanguage === 'all') {
-      const answeredQuestionsResponse = await axiosInstance.get('number-of-answered-questions')
-      const totalQuestionsResponse = await axiosInstance.get('number-of-asked-questions')
-      if (answeredQuestionsResponse.status === 200 && totalQuestionsResponse.status === 200) {
-        answeredQuestions.value = await answeredQuestionsResponse.data
-        totalQuestions.value = await totalQuestionsResponse.data
-        percentageOfAnsweredQuestions.value = Math.round(
-          (answeredQuestions.value / totalQuestions.value) * 100
-        )
-      } else {
-        console.error('Error status:', answeredQuestionsResponse.status)
-        console.error('Error:', answeredQuestionsResponse)
-      }
+    const endpointForAskedQuestions = props.programmingLanguage === 'all'
+      ? 'number-of-asked-questions'
+      : `number-of-asked-questions/${props.programmingLanguage}`
+
+    const endpointForAnsweredQuestions = props.programmingLanguage === 'all'
+      ? 'number-of-answered-questions'
+      : `number-of-answered-questions/${props.programmingLanguage}`
+
+    const answeredQuestionsResponse = await axiosInstance.get(endpointForAnsweredQuestions)
+    const totalQuestionsResponse = await axiosInstance.get(endpointForAskedQuestions)
+
+    if (answeredQuestionsResponse.status === 200 && totalQuestionsResponse.status === 200) {
+      answeredQuestions.value = await answeredQuestionsResponse.data
+      totalQuestions.value = await totalQuestionsResponse.data
+      percentageOfAnsweredQuestions.value = Math.round(
+        (answeredQuestions.value / totalQuestions.value) * 100
+      )
     } else {
-      // otherwise, we want to get questions for a specific programming language
-      const answeredQuestionsResponse = await axiosInstance.get(
-        'number-of-answered-questions/' + props.programmingLanguage
-      )
-      const totalQuestionsResponse = await axiosInstance.get(
-        'number-of-asked-questions/' + props.programmingLanguage
-      )
-      if (answeredQuestionsResponse.status === 200 && totalQuestionsResponse.status === 200) {
-        answeredQuestions.value = await answeredQuestionsResponse.data
-        totalQuestions.value = await totalQuestionsResponse.data
-        percentageOfAnsweredQuestions.value = Math.round(
-          (answeredQuestions.value / totalQuestions.value) * 100
-        )
-      } else {
-        console.error('Error status:', answeredQuestionsResponse.status)
-        console.error('Error:', answeredQuestionsResponse)
-      }
+      hasError.value = true
+      errorMessage.value = answeredQuestionsResponse.data.message
     }
   } catch (error) {
     console.error('Error:', error)
+    hasError.value = true
+    errorMessage.value = error.message
   }
 }
 
@@ -69,7 +61,10 @@ onMounted(() => {
             <div class="text-uppercase text-primary fw-bold text">
               <span>this week answered questions</span>
             </div>
-            <div class="row g-0 align-items-center">
+            <p v-if="hasError" class="alert alert-danger" role="alert">
+              {{ errorMessage }}
+            </p>
+            <div v-else class="row g-0 align-items-center">
               <div class="col-auto">
                 <div class="text-dark fw-bold h5 mb-0 me-3">
                   <span>{{ answeredQuestions }}</span>

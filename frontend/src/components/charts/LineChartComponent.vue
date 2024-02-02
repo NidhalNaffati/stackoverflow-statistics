@@ -4,122 +4,68 @@ import axiosInstance from '@/api/axiosInstance'
 import programmingLanguageColors from '@/assets/js/programmingLanguageColors'
 import Chart from 'chart.js/auto';
 
-const javaData = ref(null)
-const pythonData = ref(null)
-const javascriptData = ref(null)
-const cppData = ref(null)
-const csharpData = ref(null)
-const phpData = ref(null)
-const goData = ref(null)
-const rubyData = ref(null)
-const swiftData = ref(null)
-const kotlinData = ref(null)
+const programmingLanguages = [
+  'java', 'python', 'javascript', 'c++', 'c#', 'php', 'go', 'ruby', 'swift', 'kotlin'
+];
+
+// Create refs for each programming language
+const chartData = programmingLanguages.reduce((acc, lang) => {
+  acc[lang] = ref(null);
+  return acc;
+}, {});
+
+const hasError = ref(false) // Added a flag to track if there is an error
+const errorMessage = ref('')
+
+onMounted(() => {
+  fetchData()
+})
 
 // Fetch data from the server
 async function fetchData() {
   try {
-    const javaResponse = await axiosInstance.get('number-of-questions-per-day/java')
-    const pythonResponse = await axiosInstance.get('number-of-questions-per-day/python')
-    const javascriptResponse = await axiosInstance.get('number-of-questions-per-day/javascript')
-    const cppResponse = await axiosInstance.get('number-of-questions-per-day/c++')
-    const csharpResponse = await axiosInstance.get('number-of-questions-per-day/c#')
-    const phpResponse = await axiosInstance.get('number-of-questions-per-day/php')
-    const goResponse = await axiosInstance.get('number-of-questions-per-day/go')
-    const rubyResponse = await axiosInstance.get('number-of-questions-per-day/ruby')
-    const swiftResponse = await axiosInstance.get('number-of-questions-per-day/swift')
-    const kotlinResponse = await axiosInstance.get('number-of-questions-per-day/kotlin')
+    const requests = programmingLanguages.map(lang =>
+      axiosInstance.get(`number-of-questions-per-day/${lang}`)
+    );
 
-    if (javaResponse.status === 200) {
-      // set the chartData to the values of the response
-      javaData.value = Object.values(javaResponse.data)
-      pythonData.value = Object.values(pythonResponse.data)
-      javascriptData.value = Object.values(javascriptResponse.data)
-      cppData.value = Object.values(cppResponse.data)
-      csharpData.value = Object.values(csharpResponse.data)
-      phpData.value = Object.values(phpResponse.data)
-      goData.value = Object.values(goResponse.data)
-      rubyData.value = Object.values(rubyResponse.data)
-      swiftData.value = Object.values(swiftResponse.data)
-      kotlinData.value = Object.values(kotlinResponse.data)
+    // Wait for all requests to finish
+    const responses = await Promise.all(requests);
 
-      createChart() // Call createChart after setting chartData
-    }
+    // Set chartData
+    responses.forEach((response, index) => {
+      const lang = programmingLanguages[index];
+
+      if (response.status === 200) {
+        chartData[lang].value = Object.values(response.data);
+      } else {
+        hasError.value = true;
+        errorMessage.value = response.data.message;
+      }
+    });
+
+    createChart(); // Call createChart after setting chartData
   } catch (error) {
-    console.error(error)
+    console.error('Error:', error);
+    hasError.value = true;
+    errorMessage.value = error.message;
   }
 }
 
 function createChart() {
-  const ctx2 = document.getElementById('chart-line').getContext('2d')
+  const ctx2 = document.getElementById('chart-line').getContext('2d');
 
-  const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+  const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   new Chart(ctx2, {
     type: 'line',
     data: {
       labels: labels,
-      datasets: [
-        {
-          label: 'Java',
-          pointRadius: 2,
-          borderColor: programmingLanguageColors.java,
-          data: javaData.value
-        },
-        {
-          label: 'Python',
-          pointRadius: 2,
-          borderColor: programmingLanguageColors.python,
-          data: pythonData.value
-        },
-        {
-          label: 'Javascript',
-          pointRadius: 2,
-          borderColor: programmingLanguageColors.javascript,
-          data: javascriptData.value
-        },
-        {
-          label: 'C++',
-          pointRadius: 2,
-          borderColor: programmingLanguageColors.cpp,
-          data: cppData.value
-        },
-        {
-          label: 'C#',
-          pointRadius: 2,
-          borderColor: programmingLanguageColors.csharp,
-          data: csharpData.value
-        },
-        {
-          label: 'Go',
-          pointRadius: 2,
-          borderColor: programmingLanguageColors.go,
-          data: goData.value
-        },
-        {
-          label: 'Kotlin',
-          pointRadius: 2,
-          borderColor: programmingLanguageColors.kotlin,
-          data: kotlinData.value
-        },
-        {
-          label: 'PHP',
-          pointRadius: 2,
-          borderColor: programmingLanguageColors.php,
-          data: phpData.value
-        },
-        {
-          label: 'Swift',
-          pointRadius: 2,
-          borderColor: programmingLanguageColors.swift,
-          data: swiftData.value
-        },
-        {
-          label: 'Ruby',
-          pointRadius: 2,
-          borderColor: programmingLanguageColors.ruby,
-          data: goData.value
-        }
-      ]
+      datasets: programmingLanguages.map(lang => ({
+        label: lang.charAt(0).toUpperCase() + lang.slice(1), // Capitalize first letter
+        pointRadius: 2,
+        borderColor: programmingLanguageColors[lang],
+        data: chartData[lang].value
+      }))
     },
     options: {
       maintainAspectRatio: false,
@@ -166,12 +112,8 @@ function createChart() {
         }
       }
     }
-  })
+  });
 }
-
-onMounted(() => {
-  fetchData()
-})
 </script>
 
 <template>
@@ -185,7 +127,10 @@ onMounted(() => {
         </div>
         <div class="card-body">
           <div class="chart-area">
-            <canvas id="chart-line" class="chart-canvas"></canvas>
+            <p v-if="hasError" class="alert alert-danger" role="alert">
+              {{ errorMessage }}
+            </p>
+            <canvas v-else id="chart-line" class="chart-canvas"></canvas>
           </div>
         </div>
       </div>

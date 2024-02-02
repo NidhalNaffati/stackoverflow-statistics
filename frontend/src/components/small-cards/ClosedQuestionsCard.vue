@@ -14,44 +14,36 @@ const closedQuestions = ref(null)
 const totalQuestions = ref(null)
 const percentageOfClosedQuestions = ref(null)
 
-// Make a request to the server to retrieve data
-const fetchData = async () => {
+const hasError = ref(false) // flag to track if there is an error
+const errorMessage = ref('')
+
+async function fetchData() {
   try {
-    // if the programmingLanguage is 'all', then we want to get all questions
-    if (props.programmingLanguage === 'all') {
-      const closedQuestionResponse = await axiosInstance.get('number-of-closed-questions')
-      const totalQuestionsResponse = await axiosInstance.get('number-of-asked-questions')
-      if (closedQuestionResponse.status === 200 && totalQuestionsResponse.status === 200) {
-        closedQuestions.value = await closedQuestionResponse.data
-        totalQuestions.value = await totalQuestionsResponse.data
-        percentageOfClosedQuestions.value = Math.round(
-          (closedQuestions.value / totalQuestions.value) * 100
-        )
-      } else {
-        console.error('Error status:', closedQuestionResponse.status)
-        console.error('Error:', closedQuestionResponse)
-      }
+    const endpointForClosedQuestions = props.programmingLanguage === 'all'
+      ? 'number-of-closed-questions'
+      : `number-of-closed-questions/${props.programmingLanguage}`
+
+    const endpointForAskedQuestions = props.programmingLanguage === 'all'
+      ? 'number-of-asked-questions'
+      : `number-of-asked-questions/${props.programmingLanguage}`
+
+    const closedQuestionResponse = await axiosInstance.get(endpointForClosedQuestions)
+    const totalQuestionsResponse = await axiosInstance.get(endpointForAskedQuestions)
+
+    if (closedQuestionResponse.status === 200 && totalQuestionsResponse.status === 200) {
+      closedQuestions.value = await closedQuestionResponse.data
+      totalQuestions.value = await totalQuestionsResponse.data
+      percentageOfClosedQuestions.value = Math.round(
+        (closedQuestions.value / totalQuestions.value) * 100
+      )
     } else {
-      // otherwise, we want to get questions for a specific programming language
-      const closedQuestionResponse = await axiosInstance.get(
-        'number-of-closed-questions/' + props.programmingLanguage
-      )
-      const totalQuestionsResponse = await axiosInstance.get(
-        'number-of-asked-questions/' + props.programmingLanguage
-      )
-      if (closedQuestionResponse.status === 200 && totalQuestionsResponse.status === 200) {
-        closedQuestions.value = await closedQuestionResponse.data
-        totalQuestions.value = await totalQuestionsResponse.data
-        percentageOfClosedQuestions.value = Math.round(
-          (closedQuestions.value / totalQuestions.value) * 100
-        )
-      } else {
-        console.error('Error status:', closedQuestionResponse.status)
-        console.error('Error:', closedQuestionResponse)
-      }
+      hasError.value = true
+      errorMessage.value = closedQuestionResponse.data.message
     }
   } catch (error) {
     console.error('Error:', error)
+    hasError.value = true
+    errorMessage.value = error.message
   }
 }
 
@@ -69,7 +61,10 @@ onMounted(() => {
             <div class="text-uppercase text-warning fw-bold text">
               <span> this week Closed questions</span>
             </div>
-            <div class="row g-0 align-items-center">
+            <p v-if="hasError" class="alert alert-danger" role="alert">
+              {{ errorMessage }}
+            </p>
+            <div v-else class="row g-0 align-items-center">
               <div class="col-auto">
                 <div class="text-dark fw-bold h5 mb-0 me-3">
                   <span>{{ closedQuestions }}</span>

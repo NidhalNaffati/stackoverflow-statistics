@@ -6,7 +6,10 @@
       </div>
       <div class="card-body">
         <div class="chart-area pie-chart">
-          <canvas id="chart-pie" class="chart-canvas"></canvas>
+          <p v-if="hasError" class="alert alert-danger" role="alert">
+            {{ errorMessage }}
+          </p>
+          <canvas v-else id="chart-pie" class="chart-canvas"></canvas>
         </div>
       </div>
     </div>
@@ -21,6 +24,9 @@ import Chart from 'chart.js/auto';
 
 const chartData = ref(null)
 
+const hasError = ref(false) // Added a flag to track if there is an error
+const errorMessage = ref('')
+
 onMounted(() => {
   fetchData()
 })
@@ -32,11 +38,13 @@ const fetchData = async () => {
       chartData.value = await response.data
       createChart()
     } else {
-      console.error('Error status:', response.status)
-      console.error('Error:', response)
+      hasError.value = true;
+      errorMessage.value = response.data.message
     }
   } catch (error) {
     console.error('Error:', error)
+    hasError.value = true;
+    errorMessage.value = error.message
   }
 }
 
