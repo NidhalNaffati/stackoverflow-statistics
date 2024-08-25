@@ -1,0 +1,21 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "stackoverflow_statistics", "stackoverflow_statistics\stackoverflow_statistics.csproj", "{8005D150-3869-4C6E-B61A-D5417A72A59B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4003432E-9502-465A-AB2D-60A2BC9F7DA1}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8005D150-3869-4C6E-B61A-D5417A72A59B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8005D150-3869-4C6E-B61A-D5417A72A59B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8005D150-3869-4C6E-B61A-D5417A72A59B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8005D150-3869-4C6E-B61A-D5417A72A59B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

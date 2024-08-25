@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace stackoverflow_statistics.Migrations
+
 {
     public class DbMigration : Migration
     {

@@ -1,0 +1,6 @@
+﻿services:
+  stackoverflow_statistics:
+    image: stackoverflow_statistics
+    build:
+      context: .
+      dockerfile: stackoverflow_statistics/Dockerfile
