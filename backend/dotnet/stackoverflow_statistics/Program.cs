@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using stackoverflow_statistics.Configuration;
 using stackoverflow_statistics.Data;
+using stackoverflow_statistics.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +17,12 @@ builder.Services.AddDbContext<QuestionsReadingDbContext>(options =>
 
 // Add configuration
 builder.Services.Configure<StackExchangeApiConfig>(builder.Configuration.GetSection("StackExchange"));
-
+builder.Services.AddScoped<QuestionRepository>();
+builder.Services.AddScoped<StackExchangeApiService>();
+builder.Services.AddHttpClient<StackExchangeApiService>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -50,10 +53,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

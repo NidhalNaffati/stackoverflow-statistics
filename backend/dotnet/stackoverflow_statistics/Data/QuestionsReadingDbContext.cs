@@ -9,9 +9,9 @@ namespace stackoverflow_statistics.Data
         {
         }
 
-        public DbSet<Question> Questions { get; set; }
+        public DbSet<Question> Questions { get; init; }
 
-        public DbSet<QuestionTag> QuestionTags { get; set; }
+        public DbSet<QuestionTag> QuestionTags { get; init; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -73,7 +73,8 @@ namespace stackoverflow_statistics.Data
                     .HasMaxLength(255)
                     .HasColumnType("varchar(255)");
 
-                entity.HasOne<Question>()
+                // Define the relationship with the Question entity
+                entity.HasOne(e => e.Question)
                     .WithMany()
                     .HasForeignKey(e => e.QuestionId)
                     .OnDelete(DeleteBehavior.Cascade)
