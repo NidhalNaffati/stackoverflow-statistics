@@ -27,12 +27,10 @@ namespace stackoverflow_statistics.Controllers
         [HttpGet("this-week")]
         public async Task<IActionResult> StoreThisWeekQuestions()
         {
-            var tasks = _programmingLanguages
-                .Select(language => Task.Run(() =>
-                    _stackExchangeApiService.StoreAllQuestionsRelatedToAsync(language, OneWeekAgoInSeconds)))
-                .ToArray();
-
-            await Task.WhenAll(tasks);
+            foreach (var language in _programmingLanguages)
+            {
+                await _stackExchangeApiService.StoreAllQuestionsRelatedToAsync(language, OneWeekAgoInSeconds);
+            }
 
             return Ok("This week's questions up to date");
         }
@@ -40,13 +38,10 @@ namespace stackoverflow_statistics.Controllers
         [HttpGet("this-day")]
         public async Task<IActionResult> StoreThisDayQuestions()
         {
-            var tasks = _programmingLanguages
-                .Select(language => Task.Run(
-                    () => _stackExchangeApiService.StoreAllQuestionsRelatedToAsync(language, OneDayAgoInSeconds))
-                )
-                .ToArray();
-
-            await Task.WhenAll(tasks);
+            foreach (var language in _programmingLanguages)
+            {
+                await _stackExchangeApiService.StoreAllQuestionsRelatedToAsync(language, OneDayAgoInSeconds);
+            }
 
             return Ok("Today's questions up to date");
         }
