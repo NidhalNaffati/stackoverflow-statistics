@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:postgres}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+    database: postgresql
+    database-platform: PostgreSQLDialect
+
+  cache:
+    type: redis
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 60 # the timeout in seconds
+
+stack-exchange:
+  api-key: Ve4rjNkrFc*ZJqf25pA2ZA((
+  base-url: https://api.stackexchange.com/2.2
+  programming-languages:
+    - java
+    - python
+    - javascript
+    - go
+    - kotlin
+    - swift
+    - php
+    - ruby
+    - c++
+    - c#
+
+frontend:
+  url: ${FRONTEND_URL:http://localhost:5173}
